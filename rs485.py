@@ -22,7 +22,7 @@ print(portName)
 
 
 try:
-    ser = serial.Serial(port=portName, baudrate=115200)
+    ser = serial.Serial(port=portName, baudrate=9600)
     print("Open successfully")
 except:
     print("Can not open the port")
@@ -57,11 +57,11 @@ def setDevice1(state):
     time.sleep(1)
     print(serial_read_data(ser))
 
-while True:
-    setDevice1(True)
-    time.sleep(2)
-    setDevice1(False)
-    time.sleep(2)
+# while True:
+#     setDevice1(True)
+#     time.sleep(2)
+#     setDevice1(False)
+#     time.sleep(2)
 
 
 def serial_read_data(ser):
