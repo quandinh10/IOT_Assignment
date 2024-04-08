@@ -17,6 +17,29 @@ def received(feed_id, payload):
         
     # manual message *do it later*
     elif (len(data_dict) == 1):
+        print(data_dict)
+
+        if "mixer1" in data_dict:
+            print("Mixer1")
+
+        elif "mixer2" in data_dict:
+            print("Mixer2")
+        
+        elif "mixer3" in data_dict:
+            print("Mixer3")
+        
+        elif "pump_in" in data_dict:
+            print("Pump_in")
+        
+        elif "pump_out" in data_dict:
+            print("Pump_out")
+
+        elif "selector" in data_dict:
+            print("Selector")
+            
+        elif "cycle" in data_dict:
+            print("Cycle")
+        
         return
 
 
