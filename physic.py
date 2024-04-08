@@ -2,6 +2,9 @@ import sys
 import time
 import serial.tools.list_ports
 
+TEMP = "soil_temperature"
+MOISTURE = "soil_moisture"
+
 class Physic:
     def __init__(self, debug_flag = 0):
         """Initializes the Physics class with a debug flag and the actuators and sensors formats.
@@ -35,15 +38,13 @@ class Physic:
                 "soil_moisture" : [1, 3, 0, 7, 0, 1, 53, 203]
             }
 
-        self.portname = self.getPort()  # Retrieve the serial port to use
-
-        # Attempt to open the serial port with specified baudrate
+        self.portname = self.getPort()  
         try:
             self.ser = serial.Serial(port=self.portname, baudrate=9600)
             print("Open successfully port: ", self.portname)
         except:
             print("Exception: Can not open the port")
-            sys.exit()  # Exit the program if the serial port cannot be opened
+            sys.exit() 
 
     def getPort(self):
         """Searches for and returns the first available USB serial port."""
@@ -58,8 +59,7 @@ class Physic:
         return commPort
 
     def serial_read_data(self):
-        """Reads incoming data from the serial port and decodes it."""
-        bytesToRead = self.ser.inWaiting()  # Checks how many bytes are waiting to be read
+        bytesToRead = self.ser.inWaiting() 
         if bytesToRead > 0:
             out = self.ser.read(bytesToRead)
             data_array = [b for b in out]  # Converts the bytes to a list for easier processing
@@ -67,18 +67,18 @@ class Physic:
             if len(data_array) >= 7:
                 array_size = len(data_array)
                 value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
-                return data_array, value
+                return value
             else:
-                return data_array, None
-        return None, None
+                return -1
+        return 0
 
     def setActuators(self, ID, state):
         """Sends a command to set the state of an actuator (relay) based on its ID."""
         command_key = f'relay{ID}_{"ON" if state else "OFF"}'
         command_data = self.RS485_actuartors_format.get(command_key)
         self.ser.write(command_data)  # Sends the command data to the actuator
-        return_data, result = self.serial_read_data()  # Reads the response from the actuator
-        if self.debug_flag and (return_data != command_data or len(return_data) <= 0):
+        result = self.serial_read_data()  # Reads the response from the actuator
+        if self.debug_flag and (result == 0 or result == -1):
             print("Failed to set Actuator!")
 
     def readSensors(self, sensorName):
@@ -105,8 +105,8 @@ if __name__ == '__main__':
         time.sleep(2)
 
         # Testing sensor reading
-        print("\nTesting reading sensor: ")
-        print("Soil temperature: ", physic.readSensors('soil_temperature'))  # Read and print soil temperature
-        time.sleep(1)
-        print("Soil moisture: ", physic.readSensors('soil_moisture'))  # Read and print soil moisture
-        time.sleep(5)
+        # print("\nTesting reading sensor: ")
+        # print("Soil temperature: ", physic.readSensors(TEMP))  # Read and print soil temperature
+        # time.sleep(1)
+        # print("Soil moisture: ", physic.readSensors(MOISTURE))  # Read and print soil moisture
+        # time.sleep(5)

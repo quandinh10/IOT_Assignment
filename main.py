@@ -1,27 +1,19 @@
 from adafruit_mqtt import Adafruit_MQTT
 import time
 import random
-from rs485 import *
+# from rs485 import *
+from fsm import *
 
 def received(feed_id, payload):
-    print("Received from",feed_id,":",payload)
-    # if feed_id == "led":
-    #     if payload == "0":
-    #         writeData("1")
-    #     else:
-    #         writeData("2")
-            
-    # if feed_id == "pipe":
-    #     if payload == "0":
-    #         writeData("3")
-    #     else:
-    #         writeData("4")
+    pass
 
 
-client = Adafruit_MQTT()
-client.setRecvCallBack(received)
+# client = Adafruit_MQTT()
+# client.setRecvCallBack(received) 
 
-counter = 5
+mqtt_json_data = '{"mixer1": 10, "mixer2": 10, "mixer3": 10, "pump_in": 5, "pump_out": 5, "selector": "A", "cycle": 2}'
+sched1 = FarmScheduler(mqtt_json_data, True)
 
 while True:
-    pass
+    sched1.start()
+    time.sleep(1)
