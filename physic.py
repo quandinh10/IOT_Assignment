@@ -3,14 +3,12 @@ import time
 import serial.tools.list_ports
 
 class Physic:
-    def __init__(self, debug_flag = 0):
+    def __init__(self, debug = False):
         """Initializes the Physics class with a debug flag and the actuators and sensors formats.
         It attempts to open a serial connection to a specified port."""
-        self.debug_flag = debug_flag # Debug flag to control debug output
-
-        # Each key-value pair represents the command to turn a relay on or off
-        # The array format is:
-        # [ID, function code, starting address high byte, starting address low byte, data high byte, data low byte, CRC low byte, CRC high byte]
+        
+        self.debug = debug
+        
         self.RS485_actuartors_format = {
             'relay1_ON': [1, 6, 0, 0, 0, 255, 201, 138],
              'relay1_OFF': [1, 6, 0, 0, 0, 0, 137, 202],
@@ -60,8 +58,7 @@ class Physic:
         if bytesToRead > 0:
             out = self.ser.read(bytesToRead)
             data_array = [b for b in out]  # Converts the bytes to a list for easier processing
-            if self.debug_flag: 
-                print("Return data:", data_array)
+            print(data_array)
             if len(data_array) >= 7:
                 array_size = len(data_array)
                 value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
@@ -74,10 +71,10 @@ class Physic:
         """Sends a command to set the state of an actuator (relay) based on its ID."""
         command_key = f'relay{ID}_{"ON" if state else "OFF"}'
         command_data = self.RS485_actuartors_format.get(command_key)
+        print("command data: ",command_data)
         self.ser.write(command_data)  # Sends the command data to the actuator
-        result = self.serial_read_data()  # Reads the response from the actuator
-        if self.debug_flag and (result == 0 or result == -1):
-            print("Failed to set Actuator!")
+        if self.debug_flag:
+            print(self.serial_read_data())
 
     def readSensors(self, sensorName):
         """Sends a command to read data from a specified sensor."""
