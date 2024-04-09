@@ -73,7 +73,7 @@ class Physic:
         command_data = self.RS485_actuartors_format.get(command_key)
         print("command data: ",command_data)
         self.ser.write(command_data)  # Sends the command data to the actuator
-        if self.debug_flag:
+        if self.debug:
             print(self.serial_read_data())
 
     def readSensors(self, sensorName):
