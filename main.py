@@ -6,6 +6,9 @@ from fsm import *
 from physic import *
 from timer import *
 
+TEMP = "soil_temperature"
+MOISTURE = "soil_moisture"
+
 def received(feed_id, payload):
     data_dict = json.loads(payload)
     
@@ -28,16 +31,16 @@ client.setRecvCallBack(received)
 
 sched1 = FarmScheduler(True)
 
-# physic1 = Physic()
+physic1 = Physic()
 setTimer(1,15)
+
 while True:
     timerRun()
     
     sched1.run()
     if (timer_flag[1]):
         setTimer(1,15)
-        client.publish("mositure", 0)
-        client.publish("temperature", 2500)
-    
+        client.publish("mositure", physic1.readSensors(MOISTURE))
+        client.publish("temperature", physic1.readSensors(TEMP))
     time.sleep(1)
     pass

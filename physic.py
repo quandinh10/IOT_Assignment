@@ -2,9 +2,6 @@ import sys
 import time
 import serial.tools.list_ports
 
-TEMP = "soil_temperature"
-MOISTURE = "soil_moisture"
-
 class Physic:
     def __init__(self, debug_flag = 0):
         """Initializes the Physics class with a debug flag and the actuators and sensors formats.
