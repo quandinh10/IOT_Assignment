@@ -48,8 +48,10 @@ while True:
         setTimer(2,10)
         if (state):
             physic1.setActuators(1, False)
+            state = False
         else:
             physic1.setActuators(1, True)
+            state = True
         
     time.sleep(1)
     pass
