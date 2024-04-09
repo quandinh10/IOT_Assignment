@@ -3,12 +3,7 @@ import time
 import serial.tools.list_ports
 
 class Physic:
-    def __init__(self, debug = False):
-        """Initializes the Physics class with a debug flag and the actuators and sensors formats.
-        It attempts to open a serial connection to a specified port."""
-        
-        self.debug = debug
-        
+    def __init__(self):        
         self.RS485_actuartors_format = {
             'relay1_ON': [1, 6, 0, 0, 0, 255, 201, 138],
              'relay1_OFF': [1, 6, 0, 0, 0, 0, 137, 202],
@@ -73,8 +68,7 @@ class Physic:
         command_data = self.RS485_actuartors_format.get(command_key)
         print("command data: ",command_data)
         self.ser.write(command_data)  # Sends the command data to the actuator
-        if self.debug:
-            print(self.serial_read_data())
+        # print(self.serial_read_data())
 
     def readSensors(self, sensorName):
         """Sends a command to read data from a specified sensor."""

@@ -54,4 +54,5 @@ while True:
             state = True
         
     time.sleep(1)
+    print(physic1.serial_read_data())
     pass
