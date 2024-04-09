@@ -90,6 +90,9 @@ class Physic:
         return result  # Returns the decoded sensor value
 
 
+        
+        
+
 if __name__ == '__main__':
     physic = Physic(True)  # Initialize the class with debug mode enabled
 

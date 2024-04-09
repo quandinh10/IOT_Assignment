@@ -1,17 +1,20 @@
 '''
     Software timer
 '''
-class Timer():
-    def __init__(self, duration):
-        self.timer_counter = duration
-        self.timer_flag = 0
-    
-    def setTimer(self, duration):
-        self.timer_counter = duration
-        self.timer_flag = 0
+import numpy as np
 
-    def timerRun(self):
-        if (self.timer_counter > 0):
-            self.timer_counter -= 1
-            if (self.timer_counter <= 0):
-                self.timer_flag = 1
+NUM_TIMERS = 4
+
+timer_counter = np.zeros(NUM_TIMERS, dtype = int)
+timer_flag = np.zeros(NUM_TIMERS, dtype = int)
+    
+def setTimer(ID, duration):
+    timer_counter[ID] = duration
+    timer_flag[ID] = 0
+
+def timerRun():
+    for i in range (len(timer_counter)):
+        if (timer_counter[i] > 0):
+            timer_counter[i] -= 1
+            if (timer_counter[i] <= 0):
+                timer_flag[i] = 1

@@ -9,7 +9,6 @@ class FarmScheduler():
         self.sched = []
         self.currSched = {}
         self.currState = "IDLE"
-        self.timerState = Timer(0)
         self.debug = debug
         
     def run(self):        
@@ -21,13 +20,13 @@ class FarmScheduler():
                 return
         
         if (self.debug):
-            print(self.timerState.timer_counter)
+            print(timer_counter[0])
             
         if (self.currState == "IDLE"):
             if (self.currSched['cycle'] > 0):
                 if (self.debug):
                     print("NEW CYLCLE!")
-                self.timerState.setTimer(int(self.currSched['mixer1']))
+                setTimer(0, int(self.currSched['mixer1']))
                 self.currState = "MIXER1"
                 self.currSched['cycle'] -= 1
             else:
@@ -35,39 +34,39 @@ class FarmScheduler():
                 self.currSched = {}
                 
         elif (self.currState == "MIXER1"):
-            if (self.timerState.timer_flag):
+            if (timer_flag[0]):
                 if (self.debug):
                     print("MIXER1 DONE!")
                 self.currState = "MIXER2"
-                self.timerState.setTimer(int(self.currSched['mixer2']))
+                setTimer(0, int(self.currSched['mixer2']))
                 
         elif (self.currState == "MIXER2"):
-            if (self.timerState.timer_flag):
+            if (timer_flag[0]):
                 if (self.debug):
                     print("MIXER2 DONE!")
                 self.currState = "MIXER3"
-                self.timerState.setTimer(int(self.currSched['mixer3']))
+                setTimer(0, int(self.currSched['mixer3']))
     
         elif (self.currState == "MIXER3"):
-            if (self.timerState.timer_flag):
+            if (timer_flag[0]):
                 if (self.debug):
                     print("MIXER3 DONE!")
                 self.currState = "PUMPIN"
-                self.timerState.setTimer(int(self.currSched['pump_in']))
+                setTimer(0, int(self.currSched['pump_in']))
 
         elif (self.currState == "PUMPIN"):
-            if (self.timerState.timer_flag):
+            if (timer_flag[0]):
                 if (self.debug):
                     print("PUMPIN DONE!")
                 self.currState = "PUMPOUT"
-                self.timerState.setTimer(int(self.currSched['pump_out']))
+                setTimer(0, int(self.currSched['pump_out']))
 
         elif (self.currState == "PUMPOUT"):
-            if (self.timerState.timer_flag):
+            if (timer_flag[0]):
                 if (self.debug):
                     print("PUMPOUT DONE!")
                 self.currState = "IDLE"
-                self.timerState.setTimer(0)
+                setTimer(0, 0)
     
     def appendSched(self, data):
         self.sched.append(data)
