@@ -9,27 +9,27 @@ class Physic:
     def __init__(self, debug_flag = 0):
         """Initializes the Physics class with a debug flag and the actuators and sensors formats.
         It attempts to open a serial connection to a specified port."""
-        self.debug_flag = debug_flag # Debug flag to control debug output
+        self.debug_flag = debug_flag 
 
         # Each key-value pair represents the command to turn a relay on or off
         # The array format is:
         # [ID, function code, starting address high byte, starting address low byte, data high byte, data low byte, CRC low byte, CRC high byte]
         self.RS485_actuartors_format = {
-            'relay1_ON': [1, 6, 0, 0, 0, 255, 201, 138],
+             'relay1_ON' : [1, 6, 0, 0, 0, 255, 201, 138],
              'relay1_OFF': [1, 6, 0, 0, 0, 0, 137, 202],
-             'relay2_ON': [2, 6, 0, 0, 0, 255, 201, 185],
+             'relay2_ON' : [2, 6, 0, 0, 0, 255, 201, 185],
              'relay2_OFF': [2, 6, 0, 0, 0, 0, 137, 249],
-             'relay3_ON': [3, 6, 0, 0, 0, 255, 200, 104],
+             'relay3_ON' : [3, 6, 0, 0, 0, 255, 200, 104],
              'relay3_OFF': [3, 6, 0, 0, 0, 0, 136, 40],
-             'relay4_ON': [4, 6, 0, 0, 0, 255, 201, 223],
+             'relay4_ON' : [4, 6, 0, 0, 0, 255, 201, 223],
              'relay4_OFF': [4, 6, 0, 0, 0, 0, 137, 159],
-             'relay5_ON': [5, 6, 0, 0, 0, 255, 200, 14],
+             'relay5_ON' : [5, 6, 0, 0, 0, 255, 200, 14],
              'relay5_OFF': [5, 6, 0, 0, 0, 0, 136, 78],
-             'relay6_ON': [6, 6, 0, 0, 0, 255, 200, 61],
+             'relay6_ON' : [6, 6, 0, 0, 0, 255, 200, 61],
              'relay6_OFF': [6, 6, 0, 0, 0, 0, 136, 125],
-             'relay7_ON': [7, 6, 0, 0, 0, 255, 201, 236],
+             'relay7_ON' : [7, 6, 0, 0, 0, 255, 201, 236],
              'relay7_OFF': [7, 6, 0, 0, 0, 0, 137, 172],
-             'relay8_ON': [8, 6, 0, 0, 0, 255, 201, 19],
+             'relay8_ON' : [8, 6, 0, 0, 0, 255, 201, 19],
              'relay8_OFF': [8, 6, 0, 0, 0, 0, 137, 83]
         }
 
@@ -53,16 +53,16 @@ class Physic:
         for i in range(len(ports)):
             port = ports[i]
             strPort = str(port)
-            if "USB" in strPort:  # Checks if the port description contains 'USB'
+            if "USB" in strPort:  
                 splitPort = strPort.split(" ")
-                commPort = splitPort[0]  # Assumes the first part is the port name
+                commPort = splitPort[0]  
         return commPort
 
     def serial_read_data(self):
         bytesToRead = self.ser.inWaiting() 
         if bytesToRead > 0:
             out = self.ser.read(bytesToRead)
-            data_array = [b for b in out]  # Converts the bytes to a list for easier processing
+            data_array = [b for b in out] 
             if self.debug_flag: print("Return data:", data_array)
             if len(data_array) >= 7:
                 array_size = len(data_array)
@@ -76,37 +76,37 @@ class Physic:
         """Sends a command to set the state of an actuator (relay) based on its ID."""
         command_key = f'relay{ID}_{"ON" if state else "OFF"}'
         command_data = self.RS485_actuartors_format.get(command_key)
-        self.ser.write(command_data)  # Sends the command data to the actuator
-        result = self.serial_read_data()  # Reads the response from the actuator
+        self.ser.write(command_data)  
+        result = self.serial_read_data()
         if self.debug_flag and (result == 0 or result == -1):
             print("Failed to set Actuator!")
 
     def readSensors(self, sensorName):
         """Sends a command to read data from a specified sensor."""
         command_data = self.RS485_sensors_format.get(sensorName)
-        self.ser.write(command_data)  # Sends the command data to the sensor
-        time.sleep(1)  # Wait a bit for the sensor to respond
-        return_data, result = self.serial_read_data()  # Reads the response from the sensor
-        return result  # Returns the decoded sensor value
+        self.ser.write(command_data)  
+        time.sleep(1) 
+        return_data, result = self.serial_read_data() 
+        return result 
 
 
 if __name__ == '__main__':
-    physic = Physic(True)  # Initialize the class with debug mode enabled
+    physic = Physic(True) 
 
     # Test sequence for actuators and sensors
     while True:
         # Testing actuator control
-        print("Testing Actuators with ID 2: ")
-        print("Turn on relay_2: ")
-        physic.setActuators(2, True)  # Turn on relay 2
-        time.sleep(2)
-        print("Turn off relay_2: ")
-        physic.setActuators(2, False)  # Turn off relay 2
-        time.sleep(2)
+        # print("Testing Actuators with ID 2: ")
+        # print("Turn on relay_2: ")
+        # physic.setActuators(2, True)  # Turn on relay 2
+        # time.sleep(2)
+        # print("Turn off relay_2: ")
+        # physic.setActuators(2, False)  # Turn off relay 2
+        # time.sleep(2)
 
         # Testing sensor reading
-        # print("\nTesting reading sensor: ")
-        # print("Soil temperature: ", physic.readSensors(TEMP))  # Read and print soil temperature
-        # time.sleep(1)
-        # print("Soil moisture: ", physic.readSensors(MOISTURE))  # Read and print soil moisture
-        # time.sleep(5)
+        print("\nTesting reading sensor: ")
+        print("Soil temperature: ", physic.readSensors(TEMP))
+        time.sleep(15)
+        print("Soil moisture: ", physic.readSensors(MOISTURE))
+        time.sleep(15)
