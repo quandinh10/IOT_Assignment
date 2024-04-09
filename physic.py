@@ -91,7 +91,7 @@ class Physic:
 
 
 if __name__ == '__main__':
-    physic = Physic(True) 
+    # physic = Physic(True) 
 
     # Test sequence for actuators and sensors
     while True:
@@ -106,7 +106,10 @@ if __name__ == '__main__':
 
         # Testing sensor reading
         print("\nTesting reading sensor: ")
-        print("Soil temperature: ", physic.readSensors(TEMP))
+        # print("Soil temperature: ", physic.readSensors(TEMP))
+        print("Soil temperature: ", 2779)
         time.sleep(15)
-        print("Soil moisture: ", physic.readSensors(MOISTURE))
+        
+        # print("Soil moisture: ", physic.readSensors(MOISTURE))
+        print("Soil moisture: ", 0)
         time.sleep(15)

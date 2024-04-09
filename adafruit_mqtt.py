@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Adafruit_MQTT:
-    AIO_FEED_IDs_sub = ["data"]
+    AIO_FEED_IDs_sub = ["data","moisture","temperature"]
     AIO_USERNAME = os.environ.get('AIO_USERNAME')
     AIO_KEY = os.environ.get('AIO_KEY')
 

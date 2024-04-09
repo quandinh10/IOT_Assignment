@@ -2,6 +2,7 @@ from adafruit_mqtt import Adafruit_MQTT
 import time
 import random
 import json
+from physic import *
 from fsm import *
 
 def received(feed_id, payload):
@@ -47,9 +48,12 @@ client = Adafruit_MQTT()
 client.setRecvCallBack(received) 
 
 sched1 = FarmScheduler(True)
+physic = Physic(True)
 
 while True:
-    sched1.timerState.timerRun()
-    sched1.run()
-    time.sleep(1)
+    client.publish("temperature", physic.readSensors(TEMP))
+    client.publish("moisture", physic.readSensors(MOISTURE))
+    # sched1.timerState.timerRun()
+    # sched1.run()
+    time.sleep(15)
     pass
