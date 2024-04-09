@@ -31,9 +31,10 @@ client.setRecvCallBack(received)
 
 sched1 = FarmScheduler(True)
 
-physic1 = Physic(True)
+physic1 = Physic()
 setTimer(1,10)
 state = False
+printOutput = False
 setTimer(2,10)
 while True:
     timerRun()
@@ -49,10 +50,14 @@ while True:
         if (state):
             physic1.setActuators(2, False)
             state = False
+            printOutput = True
         else:
             physic1.setActuators(2, True)
             state = True
+            printOutput = True
         
     time.sleep(1)
-    print(physic1.serial_read_data())
+    if (printOutput):
+        print(physic1.serial_read_data())
+        printOutput = False
     pass
