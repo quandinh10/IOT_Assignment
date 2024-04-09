@@ -86,7 +86,7 @@ class Physic:
         command_data = self.RS485_sensors_format.get(sensorName)
         self.ser.write(command_data)  
         time.sleep(1) 
-        return_data, result = self.serial_read_data() 
+        result = self.serial_read_data() 
         return result 
 
 
