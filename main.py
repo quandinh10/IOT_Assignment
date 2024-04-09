@@ -32,14 +32,14 @@ client.setRecvCallBack(received)
 sched1 = FarmScheduler(True)
 
 physic1 = Physic()
-setTimer(1,15)
+setTimer(1,10)
 
 while True:
     timerRun()
     
     sched1.run()
     if (timer_flag[1]):
-        setTimer(1,15)
+        setTimer(1,10)
         client.publish("mositure", physic1.readSensors(MOISTURE))
         client.publish("temperature", physic1.readSensors(TEMP))
     time.sleep(1)

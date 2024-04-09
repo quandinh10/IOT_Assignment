@@ -60,7 +60,8 @@ class Physic:
         if bytesToRead > 0:
             out = self.ser.read(bytesToRead)
             data_array = [b for b in out]  # Converts the bytes to a list for easier processing
-            if self.debug_flag: print("Return data:", data_array)
+            if self.debug_flag: 
+                print("Return data:", data_array)
             if len(data_array) >= 7:
                 array_size = len(data_array)
                 value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
@@ -80,11 +81,11 @@ class Physic:
 
     def readSensors(self, sensorName):
         """Sends a command to read data from a specified sensor."""
+        self.serial_read_data()
         command_data = self.RS485_sensors_format.get(sensorName)
-        self.ser.write(command_data)  # Sends the command data to the sensor
-        time.sleep(1)  # Wait a bit for the sensor to respond
-        return_data, result = self.serial_read_data()  # Reads the response from the sensor
-        return result  # Returns the decoded sensor value
+        self.ser.write(command_data) 
+        time.sleep(1)  
+        return self.serial_read_data()  
 
 
         
