@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/White"
+    tools:context=".ui.DashboardFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+
+
+            <!--Mixer-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mixerCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="30dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/mixerText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="Mixer"
+                        android:textColor="@color/Gold"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/centerShim"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/mixerText"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="invisible" />
+
+                    <!--Mixer 1-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/mixer1Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/mixerText"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_toStartOf="@id/centerShim"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/mixer1Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Mixer 1"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/mixer1Img"
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_below="@id/mixer1Text"
+                                android:src="@drawable/mixer" />
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/mixer1Img"
+                                android:layout_below="@id/mixer1Text">
+
+                                <ToggleButton
+                                    android:id="@+id/mixer1Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/mixer1Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/mixer1Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Mixer 1"
+                                    android:textColor="@color/White"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/round_corner"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+
+                    <!--Mixer2-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/mixer2Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/mixerText"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_toEndOf="@id/centerShim"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/mixer2Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Mixer 2"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/mixer2Img"
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_below="@id/mixer2Text"
+                                android:src="@drawable/mixer" />
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/mixer2Img"
+                                android:layout_below="@id/mixer2Text">
+
+                                <ToggleButton
+                                    android:id="@+id/mixer2Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/mixer2Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/mixer2Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Mixer 2"
+                                    android:textColor="@color/White"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/round_corner"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!--Mixer3-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/mixer3Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/mixer1Card"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_toStartOf="@id/centerShim"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/mixer3Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Mixer 3"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/mixer3Img"
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_below="@id/mixer3Text"
+                                android:src="@drawable/mixer" />
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/mixer3Img"
+                                android:layout_below="@id/mixer3Text">
+
+                                <ToggleButton
+                                    android:id="@+id/mixer3Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/mixer3Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/mixer3Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Mixer 3"
+                                    android:background="@drawable/round_corner"
+                                    android:textColor="@color/White"
+                                    android:textStyle="bold"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:layout_below="@id/mixer3Card"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        app:cardElevation="0dp" />
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!--Area-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/areaCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_below="@id/mixerCard"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="30dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/areaText"
+                        android:textSize="24sp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="10dp"
+                        android:textStyle="bold"
+                        android:text="Area"
+                        android:textColor="@color/Gold"/>
+
+                    <View
+                        android:id="@+id/centerShim2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/areaText"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="invisible" />
+
+                    <!--Area 1-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/area1Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_toStartOf="@id/centerShim2"
+                        android:layout_below="@id/areaText"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/area1Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Area 1"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:src="@drawable/land"
+                                android:id="@+id/area1Img"
+                                android:layout_below="@id/area1Text"/>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/area1Img"
+                                android:layout_below="@id/area1Text">
+
+                                <ToggleButton
+                                    android:id="@+id/area1Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/area1Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/area1Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Area 1"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/round_corner"
+                                    android:textColor="@color/White"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+
+                    <!--Area 2-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/area2Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_below="@id/areaText"
+                        android:layout_toEndOf="@id/centerShim2"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/area2Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Area 2"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:src="@drawable/land"
+                                android:id="@+id/area2Img"
+                                android:layout_below="@id/area2Text"/>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/area2Img"
+                                android:layout_below="@id/area2Text">
+
+                                <ToggleButton
+                                    android:id="@+id/area2Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/area2Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/area2Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Area 2"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/round_corner"
+                                    android:textColor="@color/White"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!--Area 3-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/area3Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_toStartOf="@id/centerShim2"
+                        android:layout_below="@id/area1Card"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/area3Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Area 3"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:src="@drawable/land"
+                                android:id="@+id/area3Img"
+                                android:layout_below="@id/area3Text"/>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/area3Img"
+                                android:layout_below="@id/area3Text">
+
+                                <ToggleButton
+                                    android:id="@+id/area3Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/area3Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/area3Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Area 3"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/round_corner"
+                                    android:textColor="@color/White"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_below="@id/area3Card"
+                        app:cardElevation="0dp" />
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!--Pump-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/pumpCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_below="@id/areaCard"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="30dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pumpText"
+                        android:textSize="24sp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="10dp"
+                        android:textStyle="bold"
+                        android:text="Pump"
+                        android:textColor="@color/Gold"/>
+
+                    <View
+                        android:id="@+id/centerShim3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/pumpText"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="invisible" />
+
+                    <!--Pump in-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/pump1Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_toStartOf="@id/centerShim3"
+                        android:layout_below="@id/pumpText"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/pump1Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Pump in"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/pump1Img"
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_below="@id/pump1Text"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/drainage" />
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/pump1Img"
+                                android:layout_below="@id/pump1Text">
+
+                                <ToggleButton
+                                    android:id="@+id/pump1Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/pump1Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/pump1Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Pump 1"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/round_corner"
+                                    android:textColor="@color/White"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+
+                    <!--Pump out-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/pump2Card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_below="@id/pumpText"
+                        android:layout_toEndOf="@id/centerShim3"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/pump2Text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:text="Pump out"
+                                android:textColor="@color/Black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/pump2Img"
+                                android:layout_width="60dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_below="@id/pump2Text"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/drainage" />
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/pump2Img"
+                                android:layout_below="@id/pump2Text">
+
+                                <ToggleButton
+                                    android:id="@+id/pump2Button"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:background="@drawable/on_off_button_selector"
+                                    android:textOff=""
+                                    android:textOn="" />
+
+                                <TextView
+                                    android:id="@+id/pump2Time"
+                                    android:layout_width="50dp"
+                                    android:textAlignment="center"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/pump2Button"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginRight="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="-3dp"
+                                    android:text="Pump 1"
+                                    android:textStyle="bold"
+                                    android:background="@drawable/round_corner"
+                                    android:textColor="@color/White"
+                                    android:textSize="10sp" />
+
+                            </RelativeLayout>
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_below="@id/pump1Card"
+                        android:layout_marginEnd="15dp"
+                        app:cardElevation="0dp" />
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <!--Blank Card-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/blankCard"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_below="@id/pumpCard"
+                android:layout_alignParentBottom="true"
+                app:cardElevation="0dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
