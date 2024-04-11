@@ -2,6 +2,7 @@ package com.iot232.ssis.data;
 
 public class TimerInfo {
     public int mixer1Time, mixer2Time, mixer3Time, area1Time, area2Time, area3Time, pump1Time, pump2Time;
+    public String mixerFeed, areaFeed, pumpFeed;
 
     public TimerInfo() {
         this.mixer1Time = 5;
@@ -12,9 +13,13 @@ public class TimerInfo {
         this.area3Time = 5;
         this.pump1Time = 5;
         this.pump2Time = 5;
+        this.mixerFeed = " ";
+        this.areaFeed = " ";
+        this.pumpFeed = " ";
     }
 
-    public TimerInfo(int mixer1Time, int mixer2Time, int mixer3Time, int area1Time, int area2Time, int area3Time, int pump1Time, int pump2Time) {
+    public TimerInfo(int mixer1Time, int mixer2Time, int mixer3Time, int area1Time, int area2Time, int area3Time, int pump1Time, int pump2Time
+    , String mixerFeed, String areaFeed, String pumpFeed) {
         this.mixer1Time = mixer1Time;
         this.mixer2Time = mixer2Time;
         this.mixer3Time = mixer3Time;
@@ -23,5 +28,11 @@ public class TimerInfo {
         this.area3Time = area3Time;
         this.pump1Time = pump1Time;
         this.pump2Time = pump2Time;
+        this.mixerFeed = mixerFeed;
+        this.areaFeed = areaFeed;
+        this.pumpFeed = pumpFeed;
+
+
+
     }
 }

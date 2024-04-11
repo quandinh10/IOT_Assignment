@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -87,7 +88,28 @@ public class DashboardFragment extends Fragment {
         areaTitle = mView.findViewById(R.id.areaText);
         pumpTitle = mView.findViewById(R.id.pumpText);
 
+        //////CHANGE FEEDS////////
+        mixerTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeFeed(R.id.mixerText, "Mixer");
+            }
+        });
+        areaTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeFeed(R.id.areaText, "Area");
+            }
+        });
+        pumpTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeFeed(R.id.pumpText, "Pump");
+            }
+        });
 
+
+        //////CHANGE DURATION/////////
         mixer1Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,12 +159,17 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+
+        ///////BUTTONS////////
         mixer1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isMixerSelected)  buttonPressed(mixer1Button, mixer1Time, mainActivity.timerInfo.mixer1Time, 0);
                 else if (!mixer1Button.isChecked())  buttonUnpressed(mixer1Button, mixer1Time, mainActivity.timerInfo.mixer1Time, 0);
-                else mixer1Button.setChecked(!mixer1Button.isChecked());
+                else{
+                    mixer1Button.setChecked(!mixer1Button.isChecked());
+                    invalidAction();
+                }
             }
         });
         mixer2Button.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +177,10 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 if (!isMixerSelected)  buttonPressed(mixer2Button, mixer2Time, mainActivity.timerInfo.mixer2Time, 0);
                 else if (!mixer2Button.isChecked()) buttonUnpressed(mixer2Button, mixer2Time, mainActivity.timerInfo.mixer2Time, 0);
-                else mixer2Button.setChecked(!mixer2Button.isChecked());
+                else{
+                    mixer2Button.setChecked(!mixer2Button.isChecked());
+                    invalidAction();
+                }
             }
         });
         mixer3Button.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +188,10 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 if (!isMixerSelected)  buttonPressed(mixer3Button, mixer3Time, mainActivity.timerInfo.mixer3Time, 0);
                 else if (!mixer3Button.isChecked()) buttonUnpressed(mixer3Button, mixer3Time, mainActivity.timerInfo.mixer3Time, 0);
-                else mixer3Button.setChecked(!mixer3Button.isChecked());
+                else{
+                    mixer3Button.setChecked(!mixer3Button.isChecked());
+                    invalidAction();
+                }
             }
         });
         area1Button.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +199,10 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 if (!isAreaSelected)  buttonPressed(area1Button, area1Time, mainActivity.timerInfo.area1Time, 1);
                 else if (!area1Button.isChecked()) buttonUnpressed(area1Button, area1Time, mainActivity.timerInfo.area1Time, 1);
-                else area1Button.setChecked(!area1Button.isChecked());
+                else{
+                    area1Button.setChecked(!area1Button.isChecked());
+                    invalidAction();
+                }
             }
         });
         area2Button.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +210,10 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 if (!isAreaSelected)  buttonPressed(area2Button, area2Time, mainActivity.timerInfo.area2Time, 1);
                 else if (!area2Button.isChecked()) buttonUnpressed(area2Button, area2Time, mainActivity.timerInfo.area2Time, 1);
-                else area2Button.setChecked(!area2Button.isChecked());
+                else{
+                    area2Button.setChecked(!area2Button.isChecked());
+                    invalidAction();
+                }
             }
         });
         area3Button.setOnClickListener(new View.OnClickListener() {
@@ -182,7 +221,10 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 if (!isAreaSelected)  buttonPressed(area3Button, area3Time, mainActivity.timerInfo.area3Time, 1);
                 else if (!area3Button.isChecked()) buttonUnpressed(area3Button, area3Time, mainActivity.timerInfo.area3Time, 1);
-                else area3Button.setChecked(!area3Button.isChecked());
+                else{
+                    area3Button.setChecked(!area3Button.isChecked());
+                    invalidAction();
+                }
             }
         });
         pump1Button.setOnClickListener(new View.OnClickListener() {
@@ -190,7 +232,10 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 if (!isPumpSelected)  buttonPressed(pump1Button, pump1Time, mainActivity.timerInfo.pump1Time, 2);
                 else if (!pump1Button.isChecked()) buttonUnpressed(pump1Button, pump1Time, mainActivity.timerInfo.pump1Time, 2);
-                else pump1Button.setChecked(!pump1Button.isChecked());
+                else{
+                    pump1Button.setChecked(!pump1Button.isChecked());
+                    invalidAction();
+                }
             }
         });
         pump2Button.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +243,10 @@ public class DashboardFragment extends Fragment {
             public void onClick(View v) {
                 if (!isPumpSelected)  buttonPressed(pump2Button, pump2Time, mainActivity.timerInfo.pump2Time, 2);
                 else if (!pump2Button.isChecked()) buttonUnpressed(pump2Button, pump2Time, mainActivity.timerInfo.pump2Time, 2);
-                else pump2Button.setChecked(!pump2Button.isChecked());
+                else{
+                    pump2Button.setChecked(!pump2Button.isChecked());
+                    invalidAction();
+                }
             }
         });
 
@@ -234,6 +282,7 @@ public class DashboardFragment extends Fragment {
 
         EditText insertText = view.findViewById(R.id.popup_insert);
         insertText.setHint("Duration");
+        insertText.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         //////CONNECT/////
         Button popupButton1 = view.findViewById(R.id.popup_button1);
@@ -253,7 +302,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(insertText.getText().toString()) && TextUtils.isDigitsOnly(insertText.getText().toString())) {
-                    saveDuration(id, insertText.getText().toString());
+                    saveChange(id, insertText.getText().toString());
                     alertDialog.dismiss();
                 } else insertText.setError("Please enter an integer");
 
@@ -267,22 +316,107 @@ public class DashboardFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void saveDuration(int id, String duration) {
-        if (id == R.id.mixer1Card) mainActivity.timerInfo.mixer1Time = Integer.parseInt(duration);
-        else if (id == R.id.mixer2Card)
-            mainActivity.timerInfo.mixer2Time = Integer.parseInt(duration);
-        else if (id == R.id.mixer3Card)
-            mainActivity.timerInfo.mixer3Time = Integer.parseInt(duration);
-        else if (id == R.id.area1Card)
-            mainActivity.timerInfo.area1Time = Integer.parseInt(duration);
-        else if (id == R.id.area2Card)
-            mainActivity.timerInfo.area2Time = Integer.parseInt(duration);
-        else if (id == R.id.area3Card)
-            mainActivity.timerInfo.area3Time = Integer.parseInt(duration);
-        else if (id == R.id.pump1Card)
-            mainActivity.timerInfo.pump1Time = Integer.parseInt(duration);
-        else if (id == R.id.pump2Card)
-            mainActivity.timerInfo.pump2Time = Integer.parseInt(duration);
+    public void changeFeed(int id, String title) {
+        ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
+        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_dialog, constraintLayout);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        builder.setView(view);
+        AlertDialog alertDialog = builder.create();
+
+        TextView notiText = view.findViewById(R.id.popup_title);
+        notiText.setText(title);
+
+        TextView popupText = view.findViewById(R.id.popup_desc);
+        popupText.setText("Enter a feed");
+
+        EditText insertText = view.findViewById(R.id.popup_insert);
+        insertText.setHint("Feed");
+
+        //////CONNECT/////
+        Button popupButton1 = view.findViewById(R.id.popup_button1);
+        popupButton1.setText("Cancel");
+        popupButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        //////////////////
+
+        /////TRY AGAIN////
+        Button popupButton2 = view.findViewById(R.id.popup_button2);
+        popupButton2.setText("Change");
+        popupButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(insertText.getText().toString())) {
+                    saveChange(id, insertText.getText().toString());
+                    alertDialog.dismiss();
+                } else insertText.setError("Please enter a valid feed");
+
+            }
+        });
+        ///////////////
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
+    public void invalidAction() {
+        ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
+        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_dialog, constraintLayout);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        builder.setView(view);
+        AlertDialog alertDialog = builder.create();
+
+        TextView notiText = view.findViewById(R.id.popup_title);
+        notiText.setText("Invalid action");
+
+        TextView popupText = view.findViewById(R.id.popup_desc);
+        popupText.setText("Action unavailable, a timer is already active.");
+
+        EditText insertText = view.findViewById(R.id.popup_insert);
+        insertText.setVisibility(View.GONE);
+
+        //////BUTTON1/////
+        Button popupButton1 = view.findViewById(R.id.popup_button1);
+        popupButton1.setVisibility(View.GONE);
+        //////////////////
+
+        /////BUTTON2////
+        Button popupButton2 = view.findViewById(R.id.popup_button2);
+        popupButton2.setText("Cancel");
+        popupButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+
+            }
+        });
+        ///////////////
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
+    private void saveChange(int id, String str) {
+        if (id == R.id.mixer1Card) mainActivity.timerInfo.mixer1Time = Integer.parseInt(str);
+        else if (id == R.id.mixer2Card) mainActivity.timerInfo.mixer2Time = Integer.parseInt(str);
+        else if (id == R.id.mixer3Card) mainActivity.timerInfo.mixer3Time = Integer.parseInt(str);
+        else if (id == R.id.area1Card) mainActivity.timerInfo.area1Time = Integer.parseInt(str);
+        else if (id == R.id.area2Card) mainActivity.timerInfo.area2Time = Integer.parseInt(str);
+        else if (id == R.id.area3Card) mainActivity.timerInfo.area3Time = Integer.parseInt(str);
+        else if (id == R.id.pump1Card) mainActivity.timerInfo.pump1Time = Integer.parseInt(str);
+        else if (id == R.id.pump2Card) mainActivity.timerInfo.pump2Time = Integer.parseInt(str);
+        else if (id == R.id.mixerText) mainActivity.timerInfo.mixerFeed = str;
+        else if (id == R.id.areaText) mainActivity.timerInfo.areaFeed = str;
+        else if (id == R.id.pumpText) mainActivity.timerInfo.pumpFeed = str;
         setText();
         mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "userInfo.json");
     }
