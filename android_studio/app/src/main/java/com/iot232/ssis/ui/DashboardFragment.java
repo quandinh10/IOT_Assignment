@@ -45,6 +45,7 @@ public class DashboardFragment extends Fragment {
 
         for (int i = 0; i < 3; i ++) setSelected(i, false);
 
+        /////INITIALIZATION, DO NOT TOUCH//////
         mixer1Card = mView.findViewById(R.id.mixer1Card);
         mixer2Card = mView.findViewById(R.id.mixer2Card);
         mixer3Card = mView.findViewById(R.id.mixer3Card);
@@ -72,11 +73,12 @@ public class DashboardFragment extends Fragment {
         pump1Button = mView.findViewById(R.id.pump1Button);
         pump2Button = mView.findViewById(R.id.pump2Button);
 
-        setText();
-
         mixerTitle = mView.findViewById(R.id.mixerText);
         areaTitle = mView.findViewById(R.id.areaText);
         pumpTitle = mView.findViewById(R.id.pumpText);
+
+        /////SET TIMER OF RELAYS////
+        setTimer();
 
         //////CHANGE FEEDS////////
         mixerTitle.setOnClickListener(new View.OnClickListener() {
@@ -250,12 +252,14 @@ public class DashboardFragment extends Fragment {
         binding = null;
     }
 
+    ////CHANGE INT TO MM:SS/////
     public String formatTime(int totalSeconds) {
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
 
+    //////CHANGE DURATION POPUP//////
     public void changeDuration(int id, String title) {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
         View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
@@ -306,6 +310,7 @@ public class DashboardFragment extends Fragment {
         alertDialog.show();
     }
 
+    /////CHANGE FEED POPUP//////
     public void changeFeed(int id, String title) {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
         View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
@@ -355,6 +360,8 @@ public class DashboardFragment extends Fragment {
         alertDialog.show();
     }
 
+
+    /////INVALID ACTION POPUP/////
     public void invalidAction() {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
         View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
@@ -396,6 +403,7 @@ public class DashboardFragment extends Fragment {
         alertDialog.show();
     }
 
+    /////SAVE CHANGE////
     private void saveChange(int id, String str) {
         if (id == R.id.mixer1Card) mainActivity.timerInfo.mixer1Time = Integer.parseInt(str);
         else if (id == R.id.mixer2Card) mainActivity.timerInfo.mixer2Time = Integer.parseInt(str);
@@ -408,11 +416,12 @@ public class DashboardFragment extends Fragment {
         else if (id == R.id.mixerText) mainActivity.timerInfo.mixerFeed = str;
         else if (id == R.id.areaText) mainActivity.timerInfo.areaFeed = str;
         else if (id == R.id.pumpText) mainActivity.timerInfo.pumpFeed = str;
-        setText();
+        setTimer();
         mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "userInfo.json");
     }
 
-    private void setText() {
+    ////SET TIMER/////
+    private void setTimer() {
         mixer1Time.setText(formatTime(mainActivity.timerInfo.mixer1Time));
         mixer2Time.setText(formatTime(mainActivity.timerInfo.mixer2Time));
         mixer3Time.setText(formatTime(mainActivity.timerInfo.mixer3Time));
@@ -423,6 +432,7 @@ public class DashboardFragment extends Fragment {
         pump2Time.setText(formatTime(mainActivity.timerInfo.pump2Time));
     }
 
+    //////ON BUTTON PRESSED//////
     private void buttonPressed(ToggleButton toggleButton, TextView textView, int duration, int type) {
         Handler handler = new Handler();
         toggleButton.setChecked(true);
@@ -450,6 +460,7 @@ public class DashboardFragment extends Fragment {
         }, 1000);
     }
 
+    //////ON BUTTON UNPRESSED//////
     private void buttonUnpressed(ToggleButton toggleButton, TextView textView, int duration, int type) {
         Log.d("UNPRESSED", "UNPRESSED");
         textView.setText(formatTime(duration));
@@ -457,6 +468,7 @@ public class DashboardFragment extends Fragment {
         setSelected(type, false);
     }
 
+    /////CHANGE STATE//////
     private void setSelected(int type, boolean state){
         switch (type){
             case 0:
@@ -472,6 +484,7 @@ public class DashboardFragment extends Fragment {
         Log.d(String.valueOf(type), String.valueOf(state));
     }
 
+    //////CHECK STATE/////
     private boolean checkSelected(int type){
         switch (type){
             case 0: return isMixerSelected;

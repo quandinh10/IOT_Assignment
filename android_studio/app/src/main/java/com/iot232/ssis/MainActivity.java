@@ -88,19 +88,23 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         alertDialog = new AlertDialog.Builder(this);
 
+        /////TOOLBAR//////
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        ////SIDE DRAWER//////
         sideDrawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, sideDrawer, toolbar, R.string.open_nav, R.string.close_nav);
         sideDrawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        contentHelper = new ContentHelper(this);
 
+        ////INITALIZE INFO//////
         adaInfo = new AdaInfo();
         userInfo = new UserInfo();
         timerInfo = new TimerInfo();
+        contentHelper = new ContentHelper(this);
 
         //////Load content//////
         if (contentHelper.loadContent(AdaInfo.class, "adaInfo.json") != null) adaInfo = contentHelper.loadContent(AdaInfo.class, "adaInfo.json");
@@ -110,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_content_main, new HomeFragment(), "HomeFragment").commit();
 
+        ////CHECK FOR ACTIVITY TRANSITION//////
         Intent intent = getIntent();
         if (intent.hasExtra("editAdaInfo")) {
             adaInfo = new Gson().fromJson(getIntent().getExtras().getString("editAdaInfo"), AdaInfo.class);
@@ -129,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        /////SET DATE/////
         currentDay = findViewById(R.id.current_day);
         currentDate = findViewById(R.id.current_date);
         currentDay.setText(new SimpleDateFormat("EEE", Locale.getDefault()).format(new Date()));
@@ -142,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Action not available", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -208,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /////FRAGMENT MANAGER//////
         fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
             openFragment(new HomeFragment());
@@ -215,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /////DEFAULT FUNCTIONS, DO NOT TOUCH//////
     @Override
     protected void onDestroy() {
         contentHelper.writeContent(adaInfo, "adaInfo.json");
@@ -254,6 +261,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
+    /////SHARE APP//////
     private void shareApp(@NonNull Context context) {
         // code here
         final String appPackageName = context.getPackageName();
@@ -264,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
         context.startActivity(sendIntent);
     }
 
+    /////CLEAR SIDE BAR NAVIGATION/////
     private void clearNavigationSelection(@NonNull NavigationView navigationView) {
         Menu menu = navigationView.getMenu();
         menu.findItem(R.id.nav_home).setChecked(false);
@@ -273,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(R.id.nav_editconnection).setChecked(false);
     }
 
+    /////MQTT/////
     private void startMQTT() {
         if (Objects.equals(adaInfo.clientID, " ") ||
                 Objects.equals(adaInfo.username, " ") ||
@@ -317,6 +329,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    ///////POPUP FOR MQTT///////
     public void failedMQTTPopup() {
         ConstraintLayout constraintLayout = findViewById(R.id.popupDialog);
         View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_layout, constraintLayout);

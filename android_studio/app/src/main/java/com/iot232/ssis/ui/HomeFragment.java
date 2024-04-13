@@ -58,9 +58,13 @@ public class HomeFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_home, container, false);
         mainActivity = (MainActivity) getActivity();
 
+
+        ////0 FOR ALL, 1 FOR TEMP, 2 FOR HUMID/////
         graphState = 0;
 
         lineChart = mView.findViewById(R.id.graph);
+
+        ////3 DOTS OPTION FOR FILTER////
         graphHamburger = mView.findViewById(R.id.graph_hamburger);
         graphHamburger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +74,11 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        /////GRAPH TITLE////
         graphText = mView.findViewById(R.id.graphText);
 
+        //////SET ENTRIES//////
+        ////TODO GET ENTRIES FROM API//////
         entries = new ArrayList<Entry>();
         entries2 = new ArrayList<Entry>();
         Random random = new Random();
@@ -80,6 +87,7 @@ public class HomeFragment extends Fragment {
             entries2.add(new Entry(i - 1, random.nextInt(100)));
         }
 
+        /////DRAW GRAPH////
         drawGraph(graphState, entries, entries2);
 
 
@@ -92,6 +100,7 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
+    /////SHOW FILTER OPTIONS WHEN PRESSING THE 3 DOTS//////
     public void showFilterMenu(View anchorView) {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.graph_filter);
         View view = LayoutInflater.from(mainActivity).inflate(R.layout.graph_filter_layout, constraintLayout);
@@ -142,17 +151,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
         // Prevent the background from dimming
         Window window = alertDialog.getWindow();
-        if (window != null) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        }
+        if (window != null) window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
-        if (alertDialog.getWindow() != null) {
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
+        if (alertDialog.getWindow() != null) alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
 
+        // ANCHOR THE POPUP UNDER THE 3 DOTS/////
         int[] anchorLocation = new int[2];
         anchorView.getLocationOnScreen(anchorLocation);
         int anchorX = anchorLocation[0];
@@ -169,6 +174,8 @@ public class HomeFragment extends Fragment {
         alertDialog.show();
     }
 
+
+    /////DRAW GRAPH/////
     private void drawGraph(int graphState, ArrayList<Entry> entries, ArrayList<Entry> entries2){
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         lineChart.clear();
