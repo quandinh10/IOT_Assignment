@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/White"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.HomeFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                                 android:layout_height="wrap_content">
 
                                 <TextView
-                                    android:id="@+id/tempText"
+                                    android:id="@+id/graphText"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerHorizontal="true"
@@ -82,19 +82,25 @@
                                     android:textSize="24sp"
                                     android:textStyle="bold" />
 
-                                <com.straiberry.android.charts.view.LineChartView
-                                    android:id="@+id/tempChart"
+                                <ImageView
+                                    android:id="@+id/graph_hamburger"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/dots_horizontal"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginTop="5dp"/>
+
+
+                                <com.github.mikephil.charting.charts.LineChart
+                                    android:id="@+id/graph"
                                     android:layout_width="match_parent"
                                     android:layout_height="300dp"
                                     android:layout_marginBottom="8dp"
                                     android:layoutDirection="ltr"
                                     android:layout_marginTop="40dp"
                                     app:chart_grid="vertical"
-                                    app:chart_gridEffect="dashed"
-                                    app:chart_gridStrokeWidth="1dp"
-                                    app:chart_labelsSize="8sp"
-                                    app:chart_labelsXColor="@color/Gold"
-                                    app:chart_labelsYColor="@color/Gold" />
+                                    app:chart_labelsSize="8sp" />
 
 
                             </RelativeLayout>
@@ -112,6 +118,8 @@
                             android:layout_below="@id/tempCard"
                             android:layout_alignParentBottom="true"
                             app:cardElevation="0dp" />
+
+
 
 
 

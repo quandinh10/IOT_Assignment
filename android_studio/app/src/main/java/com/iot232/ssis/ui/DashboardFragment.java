@@ -1,11 +1,9 @@
 package com.iot232.ssis.ui;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,17 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.google.gson.Gson;
-import com.iot232.ssis.ConnectInfoActivity;
 import com.iot232.ssis.MainActivity;
 
 import com.iot232.ssis.R;
 import com.iot232.ssis.databinding.FragmentDashboardBinding;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class DashboardFragment extends Fragment {
     View mView;
@@ -42,8 +34,6 @@ public class DashboardFragment extends Fragment {
     boolean isMixerSelected, isAreaSelected, isPumpSelected;
 
     TextView mixerTitle, areaTitle, pumpTitle;
-
-    private final Handler loop = new Handler(Looper.getMainLooper());
 
     private FragmentDashboardBinding binding;
 
@@ -268,7 +258,7 @@ public class DashboardFragment extends Fragment {
 
     public void changeDuration(int id, String title) {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
-        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_dialog, constraintLayout);
+        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setView(view);
@@ -318,7 +308,7 @@ public class DashboardFragment extends Fragment {
 
     public void changeFeed(int id, String title) {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
-        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_dialog, constraintLayout);
+        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setView(view);
@@ -367,7 +357,7 @@ public class DashboardFragment extends Fragment {
 
     public void invalidAction() {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
-        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_dialog, constraintLayout);
+        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setView(view);
@@ -402,6 +392,7 @@ public class DashboardFragment extends Fragment {
         if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
+
         alertDialog.show();
     }
 

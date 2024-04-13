@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,34 +38,21 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.iot232.ssis.data.AdaInfo;
 import com.iot232.ssis.data.TimerInfo;
 import com.iot232.ssis.data.UserInfo;
 import com.iot232.ssis.databinding.ActivityMainBinding;
 import com.iot232.ssis.helper.ContentHelper;
-import com.iot232.ssis.helper.MD5Class;
 import com.iot232.ssis.helper.MqttHelper;
 import com.iot232.ssis.ui.DashboardFragment;
-import com.iot232.ssis.ui.home.HomeFragment;
+import com.iot232.ssis.ui.HomeFragment;
 import com.iot232.ssis.ui.automations.AutomationsFragment;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -333,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void failedMQTTPopup() {
         ConstraintLayout constraintLayout = findViewById(R.id.popupDialog);
-        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_dialog, constraintLayout);
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_layout, constraintLayout);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setView(view);
