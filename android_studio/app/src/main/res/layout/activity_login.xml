@@ -15,12 +15,18 @@
         <com.scwang.wave.MultiWaveHeader
             android:id="@+id/waveHeader"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="100dp"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             app:mwhCloseColor="@color/Corn_Yellow"
             app:mwhStartColor="@color/Gold"
             app:mwhWaveHeight="60dp" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:popupTheme="@style/Theme.SSIS.PopupOverlay" />
 
         <LinearLayout
             android:id="@+id/layout_login_image"

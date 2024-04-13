@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         /////TOOLBAR//////
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        toolbar.setSubtitle("");
         setSupportActionBar(toolbar);
 
 
@@ -234,8 +236,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.main_toolbar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        if (item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.action_notifications) {
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -298,7 +312,6 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
         if (client.isConnected()) {
-            Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
 
             client.setCallback(new MqttCallbackExtended() {
