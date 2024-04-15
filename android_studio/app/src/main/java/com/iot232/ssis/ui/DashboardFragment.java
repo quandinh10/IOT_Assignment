@@ -417,7 +417,7 @@ public class DashboardFragment extends Fragment {
         else if (id == R.id.areaText) mainActivity.timerInfo.areaFeed = str;
         else if (id == R.id.pumpText) mainActivity.timerInfo.pumpFeed = str;
         setTimer();
-        mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "userInfo.json");
+        mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "userInfo.json", (MainActivity) mainActivity);
     }
 
     ////SET TIMER/////

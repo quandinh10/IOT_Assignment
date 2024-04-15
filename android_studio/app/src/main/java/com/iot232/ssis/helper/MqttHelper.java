@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.iot232.ssis.MainActivity;
+import com.iot232.ssis.SettingsActivity;
 import com.iot232.ssis.data.AdaInfo;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;

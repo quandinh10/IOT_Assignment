@@ -1,12 +1,14 @@
 package com.iot232.ssis.helper;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.iot232.ssis.MainActivity;
+import com.iot232.ssis.SettingsActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,26 +20,29 @@ import java.io.Writer;
 
 public class ContentHelper {
     @SuppressLint("StaticFieldLeak")
-    static MainActivity mainActivity;
+    static Activity activity;
     public ContentHelper(Context context){
         if (context instanceof MainActivity) {
-            mainActivity = (MainActivity) context;
+            activity = (MainActivity) context;
+        }
+        else if (context instanceof SettingsActivity) {
+            activity = (SettingsActivity) context;
         }
     }
-    public <T> T loadContent(Class<T> type, String child) {
-        File path = mainActivity.getApplicationContext().getFilesDir();
+    public <T> T loadContent(Class<T> type, String child, Activity activity) {
+        File path = activity.getApplicationContext().getFilesDir();
         File readFrom = new File(path, child);
         if (!readFrom.exists()) {
             Log.d("CONTENT", "WRITE CONTENT");
             T info = null;
             try {info = type.newInstance();}
             catch (Exception e) {e.printStackTrace();}
-            writeContent(info, child);
+            writeContent(info, child, activity);
             return null;
         }
         try {
             Log.d("CONTENT", "LOAD CONTENT");
-            printContentJson(child);
+            printContentJson(child, activity);
             FileInputStream fis = new FileInputStream(readFrom);
             InputStreamReader isr = new InputStreamReader(fis);
 
@@ -54,8 +59,9 @@ public class ContentHelper {
         }
     }
 
-    public void writeContent(Object info, String child) {
-        File path = mainActivity.getFilesDir();
+    public void writeContent(Object info, String child, Activity activity) {
+        File path = activity.getFilesDir();
+        Log.d("DIR", String.valueOf(path));
         try {
             // Convert info to JSON string
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -71,8 +77,8 @@ public class ContentHelper {
         }
     }
 
-    private static void printContentJson(String child) {
-        File path = mainActivity.getFilesDir();
+    public void printContentJson(String child, Activity activity) {
+        File path = activity.getFilesDir();
         File jsonFile = new File(path, child);
 
         try {
@@ -100,8 +106,8 @@ public class ContentHelper {
         }
     }
 
-    public void deleteJSONFile(String child) {
-        File path = mainActivity.getFilesDir();
+    public void deleteJSONFile(String child, Activity activity) {
+        File path = activity.getFilesDir();
         File fileToDelete = new File(path, child);
 
         try {

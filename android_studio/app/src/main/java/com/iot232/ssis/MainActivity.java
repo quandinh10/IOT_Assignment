@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity {
         contentHelper = new ContentHelper(this);
 
         //////Load content//////
-        if (contentHelper.loadContent(AdaInfo.class, "adaInfo.json") != null) adaInfo = contentHelper.loadContent(AdaInfo.class, "adaInfo.json");
-        if (contentHelper.loadContent(UserInfo.class, "userInfo.json") != null) userInfo = contentHelper.loadContent(UserInfo.class, "userInfo.json");
-        if (contentHelper.loadContent(TimerInfo.class, "timerInfo.json") != null) timerInfo = contentHelper.loadContent(TimerInfo.class, "timerInfo.json");
+        if (contentHelper.loadContent(AdaInfo.class, "adaInfo.json",this) != null) adaInfo = contentHelper.loadContent(AdaInfo.class, "adaInfo.json",this);
+        if (contentHelper.loadContent(UserInfo.class, "userInfo.json",this) != null) userInfo = contentHelper.loadContent(UserInfo.class, "userInfo.json",this);
+        if (contentHelper.loadContent(TimerInfo.class, "timerInfo.json",this) != null) timerInfo = contentHelper.loadContent(TimerInfo.class, "timerInfo.json",this);
 
         if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_content_main, new HomeFragment(), "HomeFragment").commit();
@@ -120,15 +120,19 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra("editAdaInfo")) {
             adaInfo = new Gson().fromJson(getIntent().getExtras().getString("editAdaInfo"), AdaInfo.class);
-            contentHelper.writeContent(adaInfo, "adaInfo.json");
+            contentHelper.writeContent(adaInfo, "adaInfo.json",this);
         }
         else if (intent.hasExtra("editUserInfo")) {
             userInfo = new Gson().fromJson(getIntent().getExtras().getString("editUserInfo"), UserInfo.class);
-            contentHelper.writeContent(userInfo, "userInfo.json");
+            contentHelper.writeContent(userInfo, "userInfo.json",this);
+        }
+        else if (intent.hasExtra("editTimerInfo")) {
+            timerInfo = new Gson().fromJson(getIntent().getExtras().getString("editTimerInfo"), TimerInfo.class);
+            contentHelper.writeContent(timerInfo, "timerInfo.json",this);
         }
         else if (intent.hasExtra("loggedIn")){
             userInfo.isLogged = "1";
-            contentHelper.writeContent(userInfo, "userInfo.json");
+            contentHelper.writeContent(userInfo, "userInfo.json",this);
         }
 
         if (Objects.equals(userInfo.isLogged, " ")) {
@@ -166,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
                     bottomNavView.setSelectedItemId(R.id.nav_home);
                     openFragment(new HomeFragment());
                 } else if (itemId == R.id.nav_settings) {
-//            openFragment(new SettingsFragment());
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
                 } else if (itemId == R.id.nav_editprofile) {
                     Intent intent = new Intent(MainActivity.this, UserInfoActivity.class);
                     intent.putExtra("changeUserInfo", new Gson().toJson(userInfo));
@@ -181,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                     shareApp(MainActivity.this);
                 } else if (itemId == R.id.nav_logout) {
                     userInfo = new UserInfo();
-                    contentHelper.writeContent(userInfo, "userInfo.json");
+                    contentHelper.writeContent(userInfo, "userInfo.json",MainActivity.this);
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
@@ -227,9 +232,9 @@ public class MainActivity extends AppCompatActivity {
     /////DEFAULT FUNCTIONS, DO NOT TOUCH//////
     @Override
     protected void onDestroy() {
-        contentHelper.writeContent(adaInfo, "adaInfo.json");
-        contentHelper.writeContent(userInfo, "userInfo.json");
-        contentHelper.writeContent(timerInfo, "timerInfo.json");
+        contentHelper.writeContent(adaInfo, "adaInfo.json", this);
+        contentHelper.writeContent(userInfo, "userInfo.json", this);
+        contentHelper.writeContent(timerInfo, "timerInfo.json",this);
         super.onDestroy();
     }
 
@@ -388,6 +393,7 @@ public class MainActivity extends AppCompatActivity {
         }
         alertDialog.show();
     }
+
 
 
 }
