@@ -34,7 +34,10 @@ import com.iot232.ssis.MainActivity;
 import com.iot232.ssis.R;
 import com.iot232.ssis.databinding.FragmentHomeBinding;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 
@@ -45,7 +48,7 @@ public class HomeFragment extends Fragment {
     MainActivity mainActivity;
     LineChart lineChart;
     ImageView graphHamburger;
-    TextView graphText;
+    TextView graphText, currentDay, currentDate;
     ArrayList<Entry> entries, entries2;
     int graphState;
 
@@ -57,6 +60,14 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mView = inflater.inflate(R.layout.fragment_home, container, false);
         mainActivity = (MainActivity) getActivity();
+
+        assert mainActivity != null;
+        mainActivity.checkCurrentFragment();
+
+        currentDay = mView.findViewById(R.id.current_day);
+        currentDate = mView.findViewById(R.id.current_date);
+        currentDay.setText(new SimpleDateFormat("EEE", Locale.getDefault()).format(new Date()));
+        currentDate.setText(new SimpleDateFormat("d MMM", Locale.getDefault()).format(new Date()));
 
 
         ////0 FOR ALL, 1 FOR TEMP, 2 FOR HUMID/////
