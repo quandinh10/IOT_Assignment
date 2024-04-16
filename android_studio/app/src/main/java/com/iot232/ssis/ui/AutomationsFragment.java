@@ -1,38 +1,63 @@
 package com.iot232.ssis.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.iot232.ssis.databinding.FragmentAutomationsBinding;
-import com.iot232.ssis.ui.automations.AutomationsViewModel;
+import com.iot232.ssis.MainActivity;
+import com.iot232.ssis.R;
+import com.iot232.ssis.recycler.SchedulerAdapter;
+import com.iot232.ssis.recycler.SchedulerItem;
 
-public class AutomationsFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-    private FragmentAutomationsBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        AutomationsViewModel automationsViewModel =
-                new ViewModelProvider(this).get(AutomationsViewModel.class);
-
-        binding = FragmentAutomationsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textNotifications;
-        automationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
+public class AutomationFragment extends Fragment {
+    View mView;
+    MainActivity mainActivity;
+    RecyclerView schedulerView;
+    List<SchedulerItem> schedules;
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_home, container, false);
+        mainActivity = (MainActivity) getActivity();
+
+        schedules = new ArrayList<SchedulerItem>();
+
+
+
+        schedulerView = mView.findViewById(R.id.schedulerView);
+        schedulerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        schedulerView.setAdapter(new SchedulerAdapter(mainActivity.getApplicationContext(),schedules));
+
+
+        return mView;
     }
+
+    public void addSchedule(){
+        schedules.add(new SchedulerItem("", 0, 0, 0, 0, 0, 0, 0));
+    }
+
+    public void loadSchedule(){
+        for (int i = 0; i < 10; i++){
+
+        }
+    }
+
 }

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--Schedule-->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/schedulerCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/schedulerTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/popup_header"
+                android:text="Schedule 1"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="4dp"
+                android:textColor="@color/White"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ToggleButton
+                android:id="@+id/schedulerButton"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="16dp"
+                android:layout_toStartOf="@id/schedulerOption"
+                android:background="@drawable/on_off_toggler"
+                android:textOff=""
+                android:textOn="" />
+
+            <ImageView
+                android:id="@+id/schedulerOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dots_horizontal"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="5dp"/>
+
+            <View
+                android:id="@+id/centerShim"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_below="@id/schedulerTitle"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="invisible" />
+
+            <!--Start time-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/startCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/schedulerTitle"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_toStartOf="@id/centerShim"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/startText"
+                        android:layout_width="57dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:paddingVertical="4dp"
+                        android:text="Start:"
+                        android:textColor="@color/Black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/startTime"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toEndOf="@id/startText"
+                        android:text="Null"
+                        android:textColor="@color/White"
+                        android:textStyle="bold"
+                        android:background="@drawable/round_corner"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!--Area-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/areaCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/schedulerTitle"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@id/centerShim"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/areaText"
+                        android:layout_width="65dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:paddingVertical="4dp"
+                        android:text="Area:"
+                        android:textColor="@color/Black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/areaType"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toEndOf="@id/areaText"
+                        android:text="Null"
+                        android:textColor="@color/White"
+                        android:textStyle="bold"
+                        android:background="@drawable/round_corner"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mixer1Card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/startCard"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/mixer1Text"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:paddingVertical="4dp"
+                        android:text="Mixer1:"
+                        android:textColor="@color/Black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/mixer1Time"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_toEndOf="@id/mixer1Text"
+                        android:background="@drawable/round_corner"
+                        android:text="Null"
+                        android:textAlignment="center"
+                        android:textColor="@color/White"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mixer2Card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/startCard"
+                android:layout_toEndOf="@id/mixer1Card"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/mixer2Text"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="4dp"
+                        android:layout_marginStart="5dp"
+                        android:text="Mixer2:"
+                        android:textColor="@color/Black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/mixer2Time"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_toEndOf="@id/mixer2Text"
+                        android:background="@drawable/round_corner"
+                        android:text="Null"
+                        android:textAlignment="center"
+                        android:textColor="@color/White"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mixer3Card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/startCard"
+                android:layout_toRightOf="@id/mixer2Card"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/mixer3Text"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="4dp"
+                        android:text="Mixer3:"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/Black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/mixer3Time"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_toEndOf="@id/mixer3Text"
+                        android:background="@drawable/round_corner"
+                        android:text="Null"
+                        android:textAlignment="center"
+                        android:textColor="@color/White"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/pump1Card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mixer1Card"
+                android:layout_toLeftOf="@id/centerShim"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/pump1Text"
+                        android:layout_width="57dp"
+                        android:layout_marginStart="14dp"
+                        android:paddingVertical="4dp"
+                        android:layout_height="wrap_content"
+                        android:text="Pump1:"
+                        android:textColor="@color/Black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/pump1Time"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="14dp"
+                        android:layout_toEndOf="@id/pump1Text"
+                        android:text="Null"
+                        android:textColor="@color/White"
+                        android:textStyle="bold"
+                        android:background="@drawable/round_corner"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/pump2Card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/centerShim"
+                android:layout_below="@id/mixer1Card"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="20dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/pump2Text"
+                        android:layout_width="57dp"
+                        android:layout_marginStart="14dp"
+                        android:paddingVertical="4dp"
+                        android:layout_height="wrap_content"
+                        android:text="Pump2:"
+                        android:textColor="@color/Black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/pump2Time"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="14dp"
+                        android:layout_toEndOf="@id/pump2Text"
+                        android:text="Null"
+                        android:textColor="@color/White"
+                        android:textStyle="bold"
+                        android:background="@drawable/round_corner"
+                        android:textSize="14sp" />
+
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!--Blank Card-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_below="@id/pump1Card"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                app:cardElevation="0dp" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!--Blank Card-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/blankCard"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginStart="15dp"
+        android:backgroundTint="@android:color/transparent"
+        android:layout_marginEnd="15dp"
+        android:layout_below="@id/schedulerCard"
+        app:cardElevation="0dp" />
+</RelativeLayout>

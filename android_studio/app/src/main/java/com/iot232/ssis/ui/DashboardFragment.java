@@ -29,7 +29,7 @@ public class DashboardFragment extends Fragment {
     View mView;
     MainActivity mainActivity;
     CardView mixer1Card, mixer2Card, mixer3Card, area1Card, area2Card, area3Card, pump1Card, pump2Card;
-    TextView mixer1Time, mixer2Time, mixer3Time, area1Time, area2Time, area3Time, pump1Time, pump2Time;
+    TextView mixer1Time, mixer2Time, mixer3Time, pump1Time, pump2Time;
     ToggleButton mixer1Button, mixer2Button, mixer3Button, area1Button, area2Button, area3Button, pump1Button, pump2Button;
     boolean isMixerSelected, isAreaSelected, isPumpSelected;
 
@@ -120,33 +120,45 @@ public class DashboardFragment extends Fragment {
         mixer1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isMixerSelected)  buttonPressed(mixer1Button, mixer1Time, mainActivity.timerInfo.mixer1Time, 0);
+                if (mainActivity.timerInfo.mixer1Time == 0){
+                    mixer1Button.setChecked(!mixer1Button.isChecked());
+                    invalidAction(1);
+                }
+                else if (!isMixerSelected)  buttonPressed(mixer1Button, mixer1Time, mainActivity.timerInfo.mixer1Time, 0);
                 else if (!mixer1Button.isChecked())  buttonUnpressed(mixer1Button, mixer1Time, mainActivity.timerInfo.mixer1Time, 0);
                 else{
                     mixer1Button.setChecked(!mixer1Button.isChecked());
-                    invalidAction();
+                    invalidAction(0);
                 }
             }
         });
         mixer2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isMixerSelected)  buttonPressed(mixer2Button, mixer2Time, mainActivity.timerInfo.mixer2Time, 0);
+                if (mainActivity.timerInfo.mixer1Time == 0){
+                    invalidAction(1);
+                    mixer2Button.setChecked(!mixer2Button.isChecked());
+                }
+                else if (!isMixerSelected)  buttonPressed(mixer2Button, mixer2Time, mainActivity.timerInfo.mixer2Time, 0);
                 else if (!mixer2Button.isChecked()) buttonUnpressed(mixer2Button, mixer2Time, mainActivity.timerInfo.mixer2Time, 0);
                 else{
                     mixer2Button.setChecked(!mixer2Button.isChecked());
-                    invalidAction();
+                    invalidAction(0);
                 }
             }
         });
         mixer3Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isMixerSelected)  buttonPressed(mixer3Button, mixer3Time, mainActivity.timerInfo.mixer3Time, 0);
+                if (mainActivity.timerInfo.mixer1Time == 0){
+                    mixer3Button.setChecked(!mixer3Button.isChecked());
+                    invalidAction(1);
+                }
+                else if (!isMixerSelected)  buttonPressed(mixer3Button, mixer3Time, mainActivity.timerInfo.mixer3Time, 0);
                 else if (!mixer3Button.isChecked()) buttonUnpressed(mixer3Button, mixer3Time, mainActivity.timerInfo.mixer3Time, 0);
                 else{
                     mixer3Button.setChecked(!mixer3Button.isChecked());
-                    invalidAction();
+                    invalidAction(0);
                 }
             }
         });
@@ -205,22 +217,30 @@ public class DashboardFragment extends Fragment {
         pump1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPumpSelected)  buttonPressed(pump1Button, pump1Time, mainActivity.timerInfo.pump1Time, 2);
+                if (mainActivity.timerInfo.pump1Time == 0){
+                    pump1Button.setChecked(!pump1Button.isChecked());
+                    invalidAction(1);
+                }
+                else if (!isPumpSelected)  buttonPressed(pump1Button, pump1Time, mainActivity.timerInfo.pump1Time, 2);
                 else if (!pump1Button.isChecked()) buttonUnpressed(pump1Button, pump1Time, mainActivity.timerInfo.pump1Time, 2);
                 else{
                     pump1Button.setChecked(!pump1Button.isChecked());
-                    invalidAction();
+                    invalidAction(0);
                 }
             }
         });
         pump2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPumpSelected)  buttonPressed(pump2Button, pump2Time, mainActivity.timerInfo.pump2Time, 2);
+                if (mainActivity.timerInfo.pump2Time == 0){
+                    pump2Button.setChecked(!pump2Button.isChecked());
+                    invalidAction(1);
+                }
+                else if (!isPumpSelected)  buttonPressed(pump2Button, pump2Time, mainActivity.timerInfo.pump2Time, 2);
                 else if (!pump2Button.isChecked()) buttonUnpressed(pump2Button, pump2Time, mainActivity.timerInfo.pump2Time, 2);
                 else{
                     pump2Button.setChecked(!pump2Button.isChecked());
-                    invalidAction();
+                    invalidAction(0);
                 }
             }
         });
@@ -345,7 +365,7 @@ public class DashboardFragment extends Fragment {
 
 
     /////INVALID ACTION POPUP/////
-    public void invalidAction() {
+    public void invalidAction(int type) {
         ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
         View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
 
@@ -357,7 +377,8 @@ public class DashboardFragment extends Fragment {
         notiText.setText("Invalid action");
 
         TextView popupText = view.findViewById(R.id.popup_desc);
-        popupText.setText("Action unavailable, a timer is already active.");
+        if (type == 0) popupText.setText("Action unavailable, a timer is already active.");
+        else if (type == 1) popupText.setText("Please set timer before activate.");
 
         EditText insertText = view.findViewById(R.id.popup_insert);
         insertText.setVisibility(View.GONE);
@@ -436,7 +457,6 @@ public class DashboardFragment extends Fragment {
 
     //////ON BUTTON UNPRESSED//////
     private void buttonUnpressed(ToggleButton toggleButton, TextView textView, int duration, int type) {
-        Log.d("UNPRESSED", "UNPRESSED");
         textView.setText(formatTime(duration));
         toggleButton.setChecked(false);
         setSelected(type, false);
