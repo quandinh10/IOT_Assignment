@@ -13,7 +13,7 @@
         <com.scwang.wave.MultiWaveHeader
             android:id="@+id/waveHeader"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:layout_alignParentTop="true"
             app:mwhCloseColor="@color/Corn_Yellow"
             app:mwhStartColor="@color/Gold"
@@ -36,9 +36,8 @@
             android:layout_alignParentBottom="true"
             app:menu="@menu/bottom_nav_menu" />
 
-        <fragment
-            android:id="@+id/nav_host_fragment_content_main"
-            class ="androidx.navigation.fragment.NavHostFragment"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/waveHeader"
@@ -55,7 +54,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/fab_margin"
             android:layout_marginBottom="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_dialog_email"/>
+            app:maxImageSize="40dp"
+            app:srcCompat="@drawable/baseline_add_24"/>
 
     </RelativeLayout>
 

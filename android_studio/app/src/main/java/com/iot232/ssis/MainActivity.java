@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -46,7 +45,7 @@ import com.iot232.ssis.helper.ContentHelper;
 import com.iot232.ssis.helper.MqttHelper;
 import com.iot232.ssis.ui.DashboardFragment;
 import com.iot232.ssis.ui.HomeFragment;
-import com.iot232.ssis.ui.automations.AutomationsFragment;
+import com.iot232.ssis.ui.AutomationsFragment;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog.Builder alertDialog;
 
     AppBarConfiguration sideAppBarConfiguration, bottomAppBarConfiguration;
-    ActivityMainBinding binding;
+    public ActivityMainBinding binding;
     NavController navController;
     BottomNavigationView bottomNavView;
     Toolbar toolbar;
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         if (contentHelper.loadContent(TimerInfo.class, "timerInfo.json",this) != null) timerInfo = contentHelper.loadContent(TimerInfo.class, "timerInfo.json",this);
 
         if (savedInstanceState == null)
-            getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_content_main, new HomeFragment(), "HomeFragment").commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new HomeFragment(), "HomeFragment").commit();
 
         ////CHECK FOR ACTIVITY TRANSITION//////
         Intent intent = getIntent();
@@ -140,22 +139,20 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        /////SET DATE/////
-        currentDay = findViewById(R.id.current_day);
-        currentDate = findViewById(R.id.current_date);
-        currentDay.setText(new SimpleDateFormat("EEE", Locale.getDefault()).format(new Date()));
-        currentDate.setText(new SimpleDateFormat("d MMM", Locale.getDefault()).format(new Date()));
 
         //////MQTT///////
         startMQTT();
 
 
         //////Floating action button////////
+        checkCurrentFragment();
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Action not available", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Fragment currentFragment = getCurrentFragment();
+                if (currentFragment instanceof AutomationsFragment) {
+                    ((AutomationsFragment) currentFragment).addSchedule();
+                }
             }
         });
 
@@ -259,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container);
         return NavigationUI.navigateUp(navController, sideAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
@@ -267,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void openFragment(Fragment fragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.nav_host_fragment_content_main, fragment);
+        transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
     }
 
@@ -395,5 +392,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    ////CHECK FRAGMENT FOR FAB////
+    private Fragment getCurrentFragment() {
+        fragmentManager = getSupportFragmentManager();
+        return fragmentManager.findFragmentById(R.id.fragment_container);
+    }
+
+    public void checkCurrentFragment() {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment instanceof HomeFragment || currentFragment instanceof DashboardFragment) {
+            binding.appBarMain.fab.hide();
+        }
+        else binding.appBarMain.fab.show();
+    }
 
 }
