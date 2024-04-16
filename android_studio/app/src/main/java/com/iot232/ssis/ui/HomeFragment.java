@@ -117,7 +117,6 @@ public class HomeFragment extends Fragment {
                     // Handle JSON parsing error
                     Log.e("JSON parsing error", e.getMessage());
                 }
-                drawGraph(graphState, entries, entries2);
             }
 
             @Override
@@ -149,7 +148,6 @@ public class HomeFragment extends Fragment {
                     // Handle JSON parsing error
                     Log.e("JSON parsing error", e.getMessage());
                 }
-                drawGraph(graphState, entries, entries2);
             }
 
             @Override
