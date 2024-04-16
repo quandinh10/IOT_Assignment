@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.androidplot:androidplot-core:1.5.7'
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     implementation 'com.github.iielse:switchbutton:1.0.4'
-
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.github.STRAIBERRY-AI-INC:Straiberry-charts:1.1.0'
 
 }

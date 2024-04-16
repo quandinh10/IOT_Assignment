@@ -32,6 +32,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.iot232.ssis.MainActivity;
 import com.iot232.ssis.R;
+import com.iot232.ssis.data.AdafruitIoRequestTask;
 import com.iot232.ssis.databinding.FragmentHomeBinding;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +43,11 @@ import java.util.Random;
 
 
 import android.graphics.drawable.Drawable;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HomeFragment extends Fragment {
     View mView;
@@ -89,14 +95,79 @@ public class HomeFragment extends Fragment {
         graphText = mView.findViewById(R.id.graphText);
 
         //////SET ENTRIES//////
-        ////TODO GET ENTRIES FROM API//////
         entries = new ArrayList<Entry>();
         entries2 = new ArrayList<Entry>();
-        Random random = new Random();
-        for (int i = 0; i < 50; i++) {
-            entries.add(new Entry(i - 1, random.nextInt(100)));
-            entries2.add(new Entry(i - 1, random.nextInt(100)));
-        }
+        AdafruitIoRequestTask requestTask = new AdafruitIoRequestTask("temperature", new AdafruitIoRequestTask.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(String result) {
+                // Handle successful result
+                // Parse JSON response or do other processing here
+                try {
+                    JSONArray jsonArray = new JSONArray(result);
+                    int arrayLength = jsonArray.length();
+                    for (int i = arrayLength - 1; i >= 0; i--) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String valueString = jsonObject.getString("value");
+                        float value = Float.parseFloat(valueString);
+                        entries.add(new Entry(arrayLength - i - 1, value)); // Subtracting i from arrayLength gives the reversed index
+                        Log.d("Entry " + i + " value:", String.valueOf(value));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    // Handle JSON parsing error
+                    Log.e("JSON parsing error", e.getMessage());
+                }
+                drawGraph(graphState, entries, entries2);
+            }
+
+            @Override
+            public void onTaskFailed() {
+                // Handle task failure
+                // Show an error message or retry the request
+            }
+        });
+
+// Execute the AsyncTask
+        requestTask.execute();
+        AdafruitIoRequestTask requestTask2 = new AdafruitIoRequestTask("moisture", new AdafruitIoRequestTask.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(String result) {
+                // Handle successful result
+                // Parse JSON response or do other processing here
+                try {
+                    JSONArray jsonArray = new JSONArray(result);
+                    int arrayLength = jsonArray.length();
+                    for (int i = arrayLength - 1; i >= 0; i--) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String valueString = jsonObject.getString("value");
+                        float value = Float.parseFloat(valueString);
+                        entries2.add(new Entry(arrayLength - i - 1, value)); // Subtracting i from arrayLength gives the reversed index
+                        Log.d("Entry " + i + " value:", String.valueOf(value));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    // Handle JSON parsing error
+                    Log.e("JSON parsing error", e.getMessage());
+                }
+                drawGraph(graphState, entries, entries2);
+            }
+
+            @Override
+            public void onTaskFailed() {
+                // Handle task failure
+                // Show an error message or retry the request
+            }
+        });
+
+// Execute the AsyncTask
+        requestTask2.execute();
+        ////TODO GET ENTRIES FROM API//////
+
+//        Random random = new Random();
+//        for (int i = 0; i < 50; i++) {
+//            entries.add(new Entry(i - 1, random.nextInt(100)));
+//            entries2.add(new Entry(i - 1, random.nextInt(100)));
+//        }
 
         /////DRAW GRAPH////
         drawGraph(graphState, entries, entries2);

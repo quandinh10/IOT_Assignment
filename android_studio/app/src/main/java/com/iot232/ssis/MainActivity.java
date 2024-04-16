@@ -146,15 +146,15 @@ public class MainActivity extends AppCompatActivity {
 
         //////Floating action button////////
         checkCurrentFragment();
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Fragment currentFragment = getCurrentFragment();
-                if (currentFragment instanceof AutomationsFragment) {
-                    ((AutomationsFragment) currentFragment).addSchedule();
-                }
-            }
-        });
+//        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Fragment currentFragment = getCurrentFragment();
+//                if (currentFragment instanceof AutomationsFragment) {
+//                    ((AutomationsFragment) currentFragment).addSchedule();
+//                }
+//            }
+//        });
 
 
         /////Side panel/////

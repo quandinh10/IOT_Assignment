@@ -1,4 +1,4 @@
-package com.iot232.ssis.ui.automations;
+package com.iot232.ssis.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.iot232.ssis.databinding.FragmentAutomationsBinding;
+import com.iot232.ssis.ui.automations.AutomationsViewModel;
 
 public class AutomationsFragment extends Fragment {
 
