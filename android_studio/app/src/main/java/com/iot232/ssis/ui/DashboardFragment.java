@@ -34,6 +34,7 @@ public class DashboardFragment extends Fragment {
     boolean isMixerSelected, isAreaSelected, isPumpSelected;
 
     TextView mixerTitle, areaTitle, pumpTitle;
+    int areaType;
 
     private FragmentDashboardBinding binding;
 
@@ -43,7 +44,11 @@ public class DashboardFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         mainActivity = (MainActivity) getActivity();
 
+        assert mainActivity != null;
+        mainActivity.checkCurrentFragment();
+
         for (int i = 0; i < 3; i ++) setSelected(i, false);
+        areaType = 0;
 
         /////INITIALIZATION, DO NOT TOUCH//////
         mixer1Card = mView.findViewById(R.id.mixer1Card);
@@ -58,9 +63,6 @@ public class DashboardFragment extends Fragment {
         mixer1Time = mView.findViewById(R.id.mixer1Time);
         mixer2Time = mView.findViewById(R.id.mixer2Time);
         mixer3Time = mView.findViewById(R.id.mixer3Time);
-        area1Time = mView.findViewById(R.id.area1Time);
-        area2Time = mView.findViewById(R.id.area2Time);
-        area3Time = mView.findViewById(R.id.area3Time);
         pump1Time = mView.findViewById(R.id.pump1Time);
         pump2Time = mView.findViewById(R.id.pump2Time);
 
@@ -80,26 +82,6 @@ public class DashboardFragment extends Fragment {
         /////SET TIMER OF RELAYS////
         setTimer();
 
-        //////CHANGE FEEDS////////
-        mixerTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeFeed(R.id.mixerText, "Mixer");
-            }
-        });
-        areaTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeFeed(R.id.areaText, "Area");
-            }
-        });
-        pumpTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeFeed(R.id.pumpText, "Pump");
-            }
-        });
-
 
         //////CHANGE DURATION/////////
         mixer1Card.setOnClickListener(new View.OnClickListener() {
@@ -118,24 +100,6 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 changeDuration(R.id.mixer3Card, "Mixer 3");
-            }
-        });
-        area1Card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeDuration(R.id.area1Card, "Area 1");
-            }
-        });
-        area2Card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeDuration(R.id.area2Card, "Area 2");
-            }
-        });
-        area3Card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeDuration(R.id.area3Card, "Area 3");
             }
         });
         pump1Card.setOnClickListener(new View.OnClickListener() {
@@ -189,33 +153,52 @@ public class DashboardFragment extends Fragment {
         area1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isAreaSelected)  buttonPressed(area1Button, area1Time, mainActivity.timerInfo.area1Time, 1);
-                else if (!area1Button.isChecked()) buttonUnpressed(area1Button, area1Time, mainActivity.timerInfo.area1Time, 1);
-                else{
-                    area1Button.setChecked(!area1Button.isChecked());
-                    invalidAction();
+                if (!area1Button.isChecked()) {
+                    areaType = 0;
+                    isAreaSelected = false;
+                    areaButtons(false, 0);
+                }
+                else {
+                    areaType = 1;
+                    isAreaSelected = true;
+                    areaButtons(true, 0);
+                    areaButtons(false, 1);
+                    areaButtons(false, 2);
+
                 }
             }
         });
         area2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isAreaSelected)  buttonPressed(area2Button, area2Time, mainActivity.timerInfo.area2Time, 1);
-                else if (!area2Button.isChecked()) buttonUnpressed(area2Button, area2Time, mainActivity.timerInfo.area2Time, 1);
-                else{
-                    area2Button.setChecked(!area2Button.isChecked());
-                    invalidAction();
+                if (!area2Button.isChecked()){
+                    areaType = 0;
+                    isAreaSelected = false;
+                    areaButtons(false, 1);
+                }
+                else {
+                    areaType = 2;
+                    isAreaSelected = true;
+                    areaButtons(false, 0);
+                    areaButtons(true, 1);
+                    areaButtons(false, 2);
                 }
             }
         });
         area3Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isAreaSelected)  buttonPressed(area3Button, area3Time, mainActivity.timerInfo.area3Time, 1);
-                else if (!area3Button.isChecked()) buttonUnpressed(area3Button, area3Time, mainActivity.timerInfo.area3Time, 1);
-                else{
-                    area3Button.setChecked(!area3Button.isChecked());
-                    invalidAction();
+                if (!area3Button.isChecked()){
+                    areaType = 0;
+                    isAreaSelected = false;
+                    areaButtons(false, 2);
+                }
+                else {
+                    areaType = 3;
+                    isAreaSelected = true;
+                    areaButtons(false, 0);
+                    areaButtons(false, 1);
+                    areaButtons(true, 2);
                 }
             }
         });
@@ -408,14 +391,8 @@ public class DashboardFragment extends Fragment {
         if (id == R.id.mixer1Card) mainActivity.timerInfo.mixer1Time = Integer.parseInt(str);
         else if (id == R.id.mixer2Card) mainActivity.timerInfo.mixer2Time = Integer.parseInt(str);
         else if (id == R.id.mixer3Card) mainActivity.timerInfo.mixer3Time = Integer.parseInt(str);
-        else if (id == R.id.area1Card) mainActivity.timerInfo.area1Time = Integer.parseInt(str);
-        else if (id == R.id.area2Card) mainActivity.timerInfo.area2Time = Integer.parseInt(str);
-        else if (id == R.id.area3Card) mainActivity.timerInfo.area3Time = Integer.parseInt(str);
         else if (id == R.id.pump1Card) mainActivity.timerInfo.pump1Time = Integer.parseInt(str);
         else if (id == R.id.pump2Card) mainActivity.timerInfo.pump2Time = Integer.parseInt(str);
-        else if (id == R.id.mixerText) mainActivity.timerInfo.mixerFeed = str;
-        else if (id == R.id.areaText) mainActivity.timerInfo.areaFeed = str;
-        else if (id == R.id.pumpText) mainActivity.timerInfo.pumpFeed = str;
         setTimer();
         mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "userInfo.json", (MainActivity) mainActivity);
     }
@@ -425,9 +402,6 @@ public class DashboardFragment extends Fragment {
         mixer1Time.setText(formatTime(mainActivity.timerInfo.mixer1Time));
         mixer2Time.setText(formatTime(mainActivity.timerInfo.mixer2Time));
         mixer3Time.setText(formatTime(mainActivity.timerInfo.mixer3Time));
-        area1Time.setText(formatTime(mainActivity.timerInfo.area1Time));
-        area2Time.setText(formatTime(mainActivity.timerInfo.area2Time));
-        area3Time.setText(formatTime(mainActivity.timerInfo.area3Time));
         pump1Time.setText(formatTime(mainActivity.timerInfo.pump1Time));
         pump2Time.setText(formatTime(mainActivity.timerInfo.pump2Time));
     }
@@ -488,10 +462,18 @@ public class DashboardFragment extends Fragment {
     private boolean checkSelected(int type){
         switch (type){
             case 0: return isMixerSelected;
-            case 1: return isAreaSelected;
             case 2: return isPumpSelected;
             default: return false;
         }
+    }
+
+
+    /////AREA BUTTONS////
+    private void areaButtons(boolean state, int button){
+        if (button == 0) area1Button.setChecked(state);
+        else if (button == 1) area2Button.setChecked(state);
+        else area3Button.setChecked(state);
+
     }
 
 }
