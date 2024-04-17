@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/graph_card"
+        android:id="@+id/scheduler_filter_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -41,7 +41,7 @@
         android:id="@+id/blankCard"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:layout_below="@id/graph_card"
+        android:layout_below="@id/scheduler_filter_card"
         app:cardElevation="0dp"
         android:backgroundTint="@android:color/transparent"/>
     <!-- Add more filter options if needed -->

@@ -67,7 +67,7 @@
         android:id="@+id/blankCard"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:layout_below="@id/graph_card"
+        android:layout_below="@id/area_filter_card"
         app:cardElevation="0dp"
         android:backgroundTint="@android:color/transparent"/>
     <!-- Add more filter options if needed -->
