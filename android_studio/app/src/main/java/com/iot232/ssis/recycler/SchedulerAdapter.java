@@ -1,30 +1,40 @@
 package com.iot232.ssis.recycler;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iot232.ssis.MainActivity;
 import com.iot232.ssis.R;
-import com.iot232.ssis.ui.DashboardFragment;
+import com.iot232.ssis.data.SchedulerInfo;
 
 import java.util.List;
 
 public class SchedulerAdapter extends RecyclerView.Adapter<SchedulerViewHolder> {
+    private final SchedulerViewInterface schedulerViewInterface;
     Context context;
-    List<SchedulerItem> schedulerItems;
+    List<SchedulerInfo> schedulerItems;
+    MainActivity mainActivity;
 
-    public SchedulerAdapter(Context context, List<SchedulerItem>  schedulerItems){
+    int position = -1;
+
+    public SchedulerAdapter(Context context, List<SchedulerInfo>  schedulerItems, SchedulerViewInterface schedulerViewInterface){
         this.context = context;
         this.schedulerItems = schedulerItems;
+        this.schedulerViewInterface = schedulerViewInterface;
+
+        if (context instanceof MainActivity) mainActivity = (MainActivity) context;
     }
 
     @NonNull
     @Override
     public SchedulerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SchedulerViewHolder(LayoutInflater.from(context).inflate(R.layout.scheduler_layout, parent, false), context);
+        Context context = parent.getContext();
+        return new SchedulerViewHolder(LayoutInflater.from(context).inflate(R.layout.scheduler_layout, parent, false), context, this, schedulerViewInterface);
     }
 
     @Override
@@ -37,6 +47,7 @@ public class SchedulerAdapter extends RecyclerView.Adapter<SchedulerViewHolder> 
         holder.pump1Time.setText(formatTime(schedulerItems.get(position).getPump1Time()));
         holder.pump2Time.setText(formatTime(schedulerItems.get(position).getPump2Time()));
         holder.schedulerTitle.setText(schedulerItems.get(position).getSchedulerTitle());
+        this.position = holder.getAdapterPosition();
     }
 
     @Override
@@ -44,10 +55,12 @@ public class SchedulerAdapter extends RecyclerView.Adapter<SchedulerViewHolder> 
         return schedulerItems.size();
     }
 
+
     ////CHANGE INT TO MM:SS/////
-    private String formatTime(int totalSeconds) {
+    public String formatTime(int totalSeconds) {
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
+
 }

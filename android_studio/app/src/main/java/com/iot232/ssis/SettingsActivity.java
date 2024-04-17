@@ -61,6 +61,11 @@ public class SettingsActivity extends AppCompatActivity {
                     intent.putExtra("editAdaInfo", new Gson().toJson(adaInfo));
                     intent.putExtra("editUserInfo", new Gson().toJson(userInfo));
                     intent.putExtra("editTimerInfo", new Gson().toJson(timerInfo));
+                    intent.putExtra("editSchedulerInfo", new Gson().toJson(timerInfo));
+                    contentHelper.deleteJSONFile("adaInfo.json", SettingsActivity.this);
+                    contentHelper.deleteJSONFile("userInfo.json", SettingsActivity.this);
+                    contentHelper.deleteJSONFile("timerInfo.json", SettingsActivity.this);
+                    contentHelper.deleteJSONFile("schedulerInfo.json", SettingsActivity.this);
                     startActivity(intent);
                 }
             }
