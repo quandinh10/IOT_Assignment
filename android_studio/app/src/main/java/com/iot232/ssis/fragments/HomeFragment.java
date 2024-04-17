@@ -1,4 +1,4 @@
-package com.iot232.ssis.ui;
+package com.iot232.ssis.fragments;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,11 +37,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 
 
 import android.graphics.drawable.Drawable;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -126,7 +122,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-// Execute the AsyncTask
+        // Execute the AsyncTask
         requestTask.execute();
         AdafruitIoRequestTask requestTask2 = new AdafruitIoRequestTask("moisture", new AdafruitIoRequestTask.OnTaskCompleted() {
             @Override

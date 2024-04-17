@@ -5,11 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.AutomationsFragment">
+    tools:context=".fragments.AutomationsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/schedulerView"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:id="@+id/noScheduleText"
+        android:text="There are no schedules available."
+        android:textColor="@color/Gold"
+        android:textSize="18sp"
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

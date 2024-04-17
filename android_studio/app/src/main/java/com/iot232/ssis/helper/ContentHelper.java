@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.iot232.ssis.MainActivity;
 import com.iot232.ssis.SettingsActivity;
 
@@ -29,14 +30,12 @@ public class ContentHelper {
             activity = (SettingsActivity) context;
         }
     }
-    public <T> T loadContent(Class<T> type, String child, Activity activity) {
+    public <T> T loadContent(TypeToken<T> typeToken, String child, Activity activity) {
         File path = activity.getApplicationContext().getFilesDir();
         File readFrom = new File(path, child);
         if (!readFrom.exists()) {
             Log.d("CONTENT", "WRITE CONTENT");
             T info = null;
-            try {info = type.newInstance();}
-            catch (Exception e) {e.printStackTrace();}
             writeContent(info, child, activity);
             return null;
         }
@@ -47,7 +46,7 @@ public class ContentHelper {
             InputStreamReader isr = new InputStreamReader(fis);
 
             Gson gson = new Gson();
-            T info = gson.fromJson(isr, type);
+            T info = gson.fromJson(isr, typeToken.getType());
 
             isr.close();
             fis.close();
@@ -61,7 +60,6 @@ public class ContentHelper {
 
     public void writeContent(Object info, String child, Activity activity) {
         File path = activity.getFilesDir();
-        Log.d("DIR", String.valueOf(path));
         try {
             // Convert info to JSON string
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -75,6 +73,7 @@ public class ContentHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        printContentJson(child, activity);
     }
 
     public void printContentJson(String child, Activity activity) {
@@ -95,7 +94,7 @@ public class ContentHelper {
             }
 
             // Log the content of the JSON file
-            Log.d("JSON Content", content.toString());
+            Log.d(child, content.toString());
 
             // Close streams
             br.close();

@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -37,23 +36,24 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.iot232.ssis.data.AdaInfo;
+import com.iot232.ssis.data.SchedulerInfo;
 import com.iot232.ssis.data.TimerInfo;
 import com.iot232.ssis.data.UserInfo;
 import com.iot232.ssis.databinding.ActivityMainBinding;
 import com.iot232.ssis.helper.ContentHelper;
 import com.iot232.ssis.helper.MqttHelper;
-import com.iot232.ssis.ui.DashboardFragment;
-import com.iot232.ssis.ui.HomeFragment;
-import com.iot232.ssis.ui.AutomationsFragment;
+import com.iot232.ssis.fragments.DashboardFragment;
+import com.iot232.ssis.fragments.HomeFragment;
+import com.iot232.ssis.fragments.AutomationsFragment;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public ContentHelper contentHelper;
     public AdaInfo adaInfo;
     public TimerInfo timerInfo;
+    public List<SchedulerInfo> schedulerInfos;
     UserInfo userInfo;
 
     TextView currentDate, currentDay;
@@ -105,12 +106,19 @@ public class MainActivity extends AppCompatActivity {
         adaInfo = new AdaInfo();
         userInfo = new UserInfo();
         timerInfo = new TimerInfo();
+        schedulerInfos = new ArrayList<SchedulerInfo>();
         contentHelper = new ContentHelper(this);
 
+        TypeToken<AdaInfo> adaInfoTypeToken = new TypeToken<AdaInfo>() {};
+        TypeToken<UserInfo> userInfoTypeToken = new TypeToken<UserInfo>() {};
+        TypeToken<TimerInfo> timerInfoTypeToken = new TypeToken<TimerInfo>() {};
+        TypeToken<ArrayList<SchedulerInfo>> listTypeToken = new TypeToken<ArrayList<SchedulerInfo>>() {};
+
         //////Load content//////
-        if (contentHelper.loadContent(AdaInfo.class, "adaInfo.json",this) != null) adaInfo = contentHelper.loadContent(AdaInfo.class, "adaInfo.json",this);
-        if (contentHelper.loadContent(UserInfo.class, "userInfo.json",this) != null) userInfo = contentHelper.loadContent(UserInfo.class, "userInfo.json",this);
-        if (contentHelper.loadContent(TimerInfo.class, "timerInfo.json",this) != null) timerInfo = contentHelper.loadContent(TimerInfo.class, "timerInfo.json",this);
+        if (contentHelper.loadContent(adaInfoTypeToken, "adaInfo.json",this) != null) adaInfo = contentHelper.loadContent(adaInfoTypeToken, "adaInfo.json",this);
+        if (contentHelper.loadContent(userInfoTypeToken, "userInfo.json",this) != null) userInfo = contentHelper.loadContent(userInfoTypeToken, "userInfo.json",this);
+        if (contentHelper.loadContent(timerInfoTypeToken, "timerInfo.json",this) != null) timerInfo = contentHelper.loadContent(timerInfoTypeToken, "timerInfo.json",this);
+        if (contentHelper.loadContent(listTypeToken, "schedulerInfo.json",this) != null) schedulerInfos = contentHelper.loadContent(listTypeToken, "schedulerInfo.json", this);
 
         if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new HomeFragment(), "HomeFragment").commit();
@@ -146,15 +154,15 @@ public class MainActivity extends AppCompatActivity {
 
         //////Floating action button////////
         checkCurrentFragment();
-//        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Fragment currentFragment = getCurrentFragment();
-//                if (currentFragment instanceof AutomationsFragment) {
-//                    ((AutomationsFragment) currentFragment).addSchedule();
-//                }
-//            }
-//        });
+        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment currentFragment = getCurrentFragment();
+                if (currentFragment instanceof AutomationsFragment) {
+                    ((AutomationsFragment) currentFragment).addSchedule();
+                }
+            }
+        });
 
 
         /////Side panel/////
@@ -232,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
         contentHelper.writeContent(adaInfo, "adaInfo.json", this);
         contentHelper.writeContent(userInfo, "userInfo.json", this);
         contentHelper.writeContent(timerInfo, "timerInfo.json",this);
+        contentHelper.writeContent(schedulerInfos, "schedulerInfo.json",this);
         super.onDestroy();
     }
 

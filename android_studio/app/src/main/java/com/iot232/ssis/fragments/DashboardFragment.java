@@ -1,4 +1,4 @@
-package com.iot232.ssis.ui;
+package com.iot232.ssis.fragments;
 
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
@@ -24,6 +24,7 @@ import com.iot232.ssis.MainActivity;
 
 import com.iot232.ssis.R;
 import com.iot232.ssis.databinding.FragmentDashboardBinding;
+import com.iot232.ssis.recycler.SchedulerViewInterface;
 
 public class DashboardFragment extends Fragment {
     View mView;
@@ -32,7 +33,6 @@ public class DashboardFragment extends Fragment {
     TextView mixer1Time, mixer2Time, mixer3Time, pump1Time, pump2Time;
     ToggleButton mixer1Button, mixer2Button, mixer3Button, area1Button, area2Button, area3Button, pump1Button, pump2Button;
     boolean isMixerSelected, isAreaSelected, isPumpSelected;
-
     TextView mixerTitle, areaTitle, pumpTitle;
     int areaType;
 
