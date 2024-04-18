@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.data.Entry;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
@@ -42,6 +43,7 @@ import com.iot232.ssis.data.SchedulerInfo;
 import com.iot232.ssis.data.TimerInfo;
 import com.iot232.ssis.data.UserInfo;
 import com.iot232.ssis.databinding.ActivityMainBinding;
+import com.iot232.ssis.helper.AdaHelper;
 import com.iot232.ssis.helper.ContentHelper;
 import com.iot232.ssis.helper.MqttHelper;
 import com.iot232.ssis.fragments.DashboardFragment;
@@ -51,6 +53,9 @@ import com.iot232.ssis.fragments.AutomationsFragment;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,13 +73,15 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navView;
     FragmentManager fragmentManager;
     DrawerLayout sideDrawer;
-
     MqttHelper client;
+    AdaHelper tempGetter, humidGetter;
     public ContentHelper contentHelper;
     public AdaInfo adaInfo;
     public TimerInfo timerInfo;
     public List<SchedulerInfo> schedulerInfos;
-    UserInfo userInfo;
+    public UserInfo userInfo;
+    public ArrayList<Entry> tempEntries, humidEntries;
+    public int taskCount = 0;
 
     TextView currentDate, currentDay;
 
@@ -164,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         /////Side panel/////
         navView = binding.navView;
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -232,6 +238,13 @@ public class MainActivity extends AppCompatActivity {
             openFragment(new HomeFragment());
             navView.setCheckedItem(R.id.nav_home);
         }
+
+
+        getEntries();
+
+
+
+        ///////////END OF ONCREATE///////////
     }
 
     /////DEFAULT FUNCTIONS, DO NOT TOUCH//////
@@ -414,5 +427,79 @@ public class MainActivity extends AppCompatActivity {
         }
         else binding.appBarMain.fab.show();
     }
+
+
+    /////GET ENTRIES FOR GRAPH/////
+    public void getEntries(){
+        progressDialog.setMessage("Fetching data...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        ////SET ENTRIES/////
+        tempEntries = new ArrayList<Entry>();
+        humidEntries = new ArrayList<Entry>();
+        tempGetter = new AdaHelper("temperature", new AdaHelper.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(String result) {
+                try {
+                    JSONArray jsonArray = new JSONArray(result);
+                    int arrayLength = jsonArray.length();
+                    for (int i = arrayLength - 1; i >= 0; i--) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String valueString = jsonObject.getString("value");
+                        float value = Float.parseFloat(valueString);
+                        tempEntries.add(new Entry(arrayLength - i - 1, value)); // Subtracting i from arrayLength gives the reversed index
+                    }
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                taskCompleted();
+            }
+
+            @Override
+            public void onTaskFailed() {}
+        }, adaInfo.username, adaInfo.password);
+
+        // Execute the AsyncTask
+        tempGetter.execute();
+        humidGetter = new AdaHelper("moisture", new AdaHelper.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(String result) {
+                try {
+                    JSONArray jsonArray = new JSONArray(result);
+                    int arrayLength = jsonArray.length();
+                    for (int i = arrayLength - 1; i >= 0; i--) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String valueString = jsonObject.getString("value");
+                        float value = Float.parseFloat(valueString);
+                        humidEntries.add(new Entry(arrayLength - i - 1, value)); // Subtracting i from arrayLength gives the reversed index
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                taskCompleted();
+            }
+
+            @Override
+            public void onTaskFailed() {}
+        }, adaInfo.username, adaInfo.password);
+
+        // Execute the AsyncTask
+        humidGetter.execute();
+    }
+
+    private void taskCompleted(){
+        taskCount++;
+        if (taskCount == 2){
+            taskCount = 0;
+            progressDialog.dismiss();
+            Fragment currentFragment = getCurrentFragment();
+            if (currentFragment instanceof HomeFragment) {
+                ((HomeFragment) currentFragment).drawGraph(0, tempEntries, humidEntries);
+            }
+        }
+    }
+
 
 }

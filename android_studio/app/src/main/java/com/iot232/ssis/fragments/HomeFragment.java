@@ -1,6 +1,7 @@
 package com.iot232.ssis.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -30,7 +31,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.iot232.ssis.MainActivity;
 import com.iot232.ssis.R;
-import com.iot232.ssis.data.AdafruitIoRequestTask;
+import com.iot232.ssis.helper.AdaHelper;
 import com.iot232.ssis.databinding.FragmentHomeBinding;
 
 import java.text.SimpleDateFormat;
@@ -49,9 +50,8 @@ public class HomeFragment extends Fragment {
     View mView;
     MainActivity mainActivity;
     LineChart lineChart;
-    ImageView graphHamburger;
+    ImageView graphOption;
     TextView graphText, currentDay, currentDate;
-    ArrayList<Entry> entries, entries2;
     int graphState;
 
     private FragmentHomeBinding binding;
@@ -66,6 +66,8 @@ public class HomeFragment extends Fragment {
         assert mainActivity != null;
         mainActivity.checkCurrentFragment();
 
+
+        ///SHOW DATE////
         currentDay = mView.findViewById(R.id.current_day);
         currentDate = mView.findViewById(R.id.current_date);
         currentDay.setText(new SimpleDateFormat("EEE", Locale.getDefault()).format(new Date()));
@@ -78,94 +80,20 @@ public class HomeFragment extends Fragment {
         lineChart = mView.findViewById(R.id.graph);
 
         ////3 DOTS OPTION FOR FILTER////
-        graphHamburger = mView.findViewById(R.id.graph_hamburger);
-        graphHamburger.setOnClickListener(new View.OnClickListener() {
+        graphOption = mView.findViewById(R.id.graph_hamburger);
+        graphOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Show filter menu dialog anchored to the graph hamburger menu
-                showFilterMenu(graphHamburger);
+                showFilterMenu(graphOption);
             }
         });
 
         /////GRAPH TITLE////
         graphText = mView.findViewById(R.id.graphText);
 
-        //////SET ENTRIES//////
-        entries = new ArrayList<Entry>();
-        entries2 = new ArrayList<Entry>();
-        AdafruitIoRequestTask requestTask = new AdafruitIoRequestTask("temperature", new AdafruitIoRequestTask.OnTaskCompleted() {
-            @Override
-            public void onTaskCompleted(String result) {
-                // Handle successful result
-                // Parse JSON response or do other processing here
-                try {
-                    JSONArray jsonArray = new JSONArray(result);
-                    int arrayLength = jsonArray.length();
-                    for (int i = arrayLength - 1; i >= 0; i--) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String valueString = jsonObject.getString("value");
-                        float value = Float.parseFloat(valueString);
-                        entries.add(new Entry(arrayLength - i - 1, value)); // Subtracting i from arrayLength gives the reversed index
-                        Log.d("Entry " + i + " value:", String.valueOf(value));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    // Handle JSON parsing error
-                    Log.e("JSON parsing error", e.getMessage());
-                }
-            }
-
-            @Override
-            public void onTaskFailed() {
-                // Handle task failure
-                // Show an error message or retry the request
-            }
-        });
-
-        // Execute the AsyncTask
-        requestTask.execute();
-        AdafruitIoRequestTask requestTask2 = new AdafruitIoRequestTask("moisture", new AdafruitIoRequestTask.OnTaskCompleted() {
-            @Override
-            public void onTaskCompleted(String result) {
-                // Handle successful result
-                // Parse JSON response or do other processing here
-                try {
-                    JSONArray jsonArray = new JSONArray(result);
-                    int arrayLength = jsonArray.length();
-                    for (int i = arrayLength - 1; i >= 0; i--) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String valueString = jsonObject.getString("value");
-                        float value = Float.parseFloat(valueString);
-                        entries2.add(new Entry(arrayLength - i - 1, value)); // Subtracting i from arrayLength gives the reversed index
-                        Log.d("Entry " + i + " value:", String.valueOf(value));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    // Handle JSON parsing error
-                    Log.e("JSON parsing error", e.getMessage());
-                }
-            }
-
-            @Override
-            public void onTaskFailed() {
-                // Handle task failure
-                // Show an error message or retry the request
-            }
-        });
-
-// Execute the AsyncTask
-        requestTask2.execute();
-        ////TODO GET ENTRIES FROM API//////
-
-//        Random random = new Random();
-//        for (int i = 0; i < 50; i++) {
-//            entries.add(new Entry(i - 1, random.nextInt(100)));
-//            entries2.add(new Entry(i - 1, random.nextInt(100)));
-//        }
-
-        /////DRAW GRAPH////
-        drawGraph(graphState, entries, entries2);
-
+        ////DRAW GRAPH/////
+        drawGraph(graphState, mainActivity.tempEntries, mainActivity.humidEntries);
 
         return mView;
     }
@@ -199,7 +127,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 graphState = 0;
-                drawGraph(graphState, entries, entries2);
+                drawGraph(graphState, mainActivity.tempEntries, mainActivity.humidEntries);
                 alertDialog.dismiss();
             }
         });
@@ -210,7 +138,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 graphState = 1;
-                drawGraph(graphState, entries, entries2);
+                drawGraph(graphState, mainActivity.tempEntries, mainActivity.humidEntries);
                 alertDialog.dismiss();
 
             }
@@ -222,7 +150,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 graphState = 2;
-                drawGraph(graphState, entries, entries2);
+                drawGraph(graphState, mainActivity.tempEntries, mainActivity.humidEntries);
                 alertDialog.dismiss();
             }
         });
@@ -252,53 +180,56 @@ public class HomeFragment extends Fragment {
 
 
     /////DRAW GRAPH/////
-    private void drawGraph(int graphState, ArrayList<Entry> entries, ArrayList<Entry> entries2){
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        lineChart.clear();
-        if (graphState != 2) {
-            LineDataSet dataSet = new LineDataSet(entries, "Temperature");
-            dataSet.setDrawFilled(true);
-            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.gradient_green);
-            dataSet.setFillDrawable(drawable);
-            dataSet.setDrawCircles(false);
-            dataSet.setLineWidth(3);
-            dataSet.setColor(Color.GREEN);
-            dataSets.add(dataSet);
+    public void drawGraph(int graphState, ArrayList<Entry> entries, ArrayList<Entry> entries2) {
+        Context context = getContext();
+        if (context != null) {
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+            lineChart.clear();
+            if (graphState != 2) {
+                LineDataSet dataSet = new LineDataSet(entries, "Temperature");
+                dataSet.setDrawFilled(true);
+                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.gradient_green);
+                dataSet.setFillDrawable(drawable);
+                dataSet.setDrawCircles(false);
+                dataSet.setLineWidth(3);
+                dataSet.setColor(Color.GREEN);
+                dataSets.add(dataSet);
+            }
+            if (graphState != 1) {
+                LineDataSet dataSet2 = new LineDataSet(entries2, "Humidity");
+                dataSet2.setDrawFilled(true);
+                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.gradient_yellow);
+                dataSet2.setFillDrawable(drawable);
+                dataSet2.setDrawCircles(false);
+                dataSet2.setLineWidth(3);
+                dataSet2.setColor(Color.YELLOW);
+                dataSets.add(dataSet2);
+            }
+
+            // Set chart description
+            Description description = new Description();
+            description.setText("");
+            description.setTextColor(Color.rgb(43, 101, 236));
+            description.setTextSize(30);
+
+            // Create LineData from the data sets
+            LineData data = new LineData(dataSets);
+            lineChart.setData(data);
+            lineChart.setDescription(description);
+            lineChart.setDrawGridBackground(false);
+            lineChart.setDragEnabled(false);
+
+            // Configure X axis
+            XAxis xAxis = lineChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Show X axis at the bottom
+            xAxis.setAxisMinimum(0f);
+
+            // Configure Y axis
+            YAxis yAxisLeft = lineChart.getAxisLeft();
+            YAxis yAxisRight = lineChart.getAxisRight();
+            yAxisLeft.setAxisMinimum(0f);
+            yAxisRight.setEnabled(false); // Disable right Y axis
         }
-        if (graphState != 1) {
-            LineDataSet dataSet2 = new LineDataSet(entries2, "Humidity");
-            dataSet2.setDrawFilled(true);
-            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.gradient_yellow);
-            dataSet2.setFillDrawable(drawable);
-            dataSet2.setDrawCircles(false);
-            dataSet2.setLineWidth(3);
-            dataSet2.setColor(Color.YELLOW);
-            dataSets.add(dataSet2);
-        }
-
-        // Set chart description
-        Description description = new Description();
-        description.setText("");
-        description.setTextColor(Color.rgb(43, 101, 236));
-        description.setTextSize(30);
-
-        // Create LineData from the data sets
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
-        lineChart.setDescription(description);
-        lineChart.setDrawGridBackground(false);
-        lineChart.setDragEnabled(false);
-
-        // Configure X axis
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Show X axis at the bottom
-        xAxis.setAxisMinimum(0f);
-
-        // Configure Y axis
-        YAxis yAxisLeft = lineChart.getAxisLeft();
-        YAxis yAxisRight = lineChart.getAxisRight();
-        yAxisLeft.setAxisMinimum(0f);
-        yAxisRight.setEnabled(false); // Disable right Y axis
     }
 
 }

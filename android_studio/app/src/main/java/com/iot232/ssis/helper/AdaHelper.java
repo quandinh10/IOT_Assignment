@@ -1,4 +1,4 @@
-package com.iot232.ssis.data;
+package com.iot232.ssis.helper;
 
 import android.os.AsyncTask;
 import java.io.IOException;
@@ -6,18 +6,16 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AdafruitIoRequestTask extends AsyncTask<Void, Void, String> {
+public class AdaHelper extends AsyncTask<Void, Void, String> {
+    public String feedKey;
+    public OnTaskCompleted listener;
+    public String username, password;
 
-    private static final String ADAFRUIT_IO_URL = "https://io.adafruit.com/api/v2/";
-    private static final String IO_KEY = "";
-    private static final String USERNAME = "project_IOT_hcmut";
-    private String feedKey; // Dynamic feed key
-
-    private OnTaskCompleted listener;
-
-    public AdafruitIoRequestTask(String feedKey, OnTaskCompleted listener) {
+    public AdaHelper(String feedKey, OnTaskCompleted listener, String username, String password) {
         this.feedKey = feedKey;
         this.listener = listener;
+        this.username = username;
+        this.password = password;
     }
 
     @Override
@@ -25,8 +23,8 @@ public class AdafruitIoRequestTask extends AsyncTask<Void, Void, String> {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url(ADAFRUIT_IO_URL + USERNAME + "/feeds/" + feedKey + "/data") // Use dynamic feed key
-                .header("X-AIO-Key", IO_KEY)
+                .url("https://io.adafruit.com/api/v2/" + username + "/feeds/" + feedKey + "/data") // Use dynamic feed key
+                .header("X-AIO-Key", password)
                 .build();
 
         try {
@@ -46,11 +44,8 @@ public class AdafruitIoRequestTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        if (result != null) {
-            listener.onTaskCompleted(result);
-        } else {
-            listener.onTaskFailed();
-        }
+        if (result != null) listener.onTaskCompleted(result);
+        else listener.onTaskFailed();
     }
 
     public interface OnTaskCompleted {
