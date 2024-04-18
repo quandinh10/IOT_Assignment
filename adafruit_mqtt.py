@@ -4,8 +4,8 @@ import os
 
 class Adafruit_MQTT:
     AIO_FEED_IDs_sub = ["data"]
-    AIO_USERNAME = "project_IOT_hcmut"
-    AIO_KEY = "aio_Tezi86jSBHFJmRO55MikawC2TNTLabc"
+    AIO_USERNAME = ""
+    AIO_KEY = ""
 
     recvCallBack = None
     client = None
