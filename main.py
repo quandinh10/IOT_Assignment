@@ -8,6 +8,7 @@ from timer import *
 
 TEMP = "soil_temperature"
 MOISTURE = "soil_moisture"
+currDevice = None
 
 def received(feed_id, payload):
     data_dict = json.loads(payload)
@@ -18,23 +19,46 @@ def received(feed_id, payload):
     
     # data_dict does not contain startTime
     elif (len(data_dict) == 7):
+        if (sched1.currSched):
+            return
         sched1.currSched = data_dict
         
     # manual message *do it later*
     elif (len(data_dict) == 1):
+        dict_key = next(iter(data_dict))
+        duration = data_dict[dict_key]
+        setTimer(3, duration)
+        if ('mixer1' in data_dict):
+            currDevice = MIXER1
+        elif ('mixer2' in data_dict):
+            currDevice = MIXER2
+        elif ('mixer3' in data_dict):
+            currDevice = MIXER3
+        elif ('pump_in' in data_dict):
+            currDevice = PUMPIN
+        elif ('pump_out' in data_dict):
+            currDevice = PUMPOUT
+        if PHYSIC:
+            physic1.setsetActuators(currDevice, True)
         
-        return
 
 
 client = Adafruit_MQTT()
 client.setRecvCallBack(received)
 
-sched1 = FarmScheduler(True)
+# physic1 = Physic()
+physic1 = None
+sched1 = FarmScheduler(physic1,True)
 
-physic1 = Physic()
+
+'''
+    timer0: for FarmScheduler
+    timer1: for environmental monitoring (temp and moisture)
+    timer2: for physic testing
+'''
+
 setTimer(1,10)
 state = False
-printOutput = False
 setTimer(2,10)
 while True:
     timerRun()
@@ -45,19 +69,21 @@ while True:
     #     client.publish("moisture", physic1.readSensors(MOISTURE))
     #     client.publish("temperature", physic1.readSensors(TEMP))
         
-    if (timer_flag[2]):
-        setTimer(2,10)
-        if (state):
-            physic1.setActuators(2, False)
-            state = False
-            printOutput = True
-        else:
-            physic1.setActuators(2, True)
-            state = True
-            printOutput = True
+    # if (timer_flag[2]):
+    #     setTimer(2,10)
+    #     if (state):
+    #         physic1.setActuators(2, False)
+    #         state = False
+    #     else:
+    #         physic1.setActuators(2, True)
+    #         state = True
         
+    if (timer_flag[3]):
+        setTimer(3, 0)
+        if (PHYSIC):
+            physic1.setActuators(currDevice, False)
+            currDevice = None
+        print("Manual: FINISHED!!!")
     time.sleep(1)
-    if (printOutput):
-        print(physic1.serial_read_data())
-        printOutput = False
+    # print(physic1.serial_read_data())
     pass

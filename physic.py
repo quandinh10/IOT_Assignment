@@ -2,6 +2,15 @@ import sys
 import time
 import serial.tools.list_ports
 
+MIXER1 = 2
+MIXER2 = 3
+MIXER3 = 4
+PUMPIN = 5
+PUMPOUT = 6
+AREA1 = 7
+AREA2 = 8
+AREA3 = 9
+
 class Physic:
     def __init__(self):        
         self.RS485_actuartors_format = {
@@ -66,7 +75,6 @@ class Physic:
         """Sends a command to set the state of an actuator (relay) based on its ID."""
         command_key = f'relay{ID}_{"ON" if state else "OFF"}'
         command_data = self.RS485_actuartors_format.get(command_key)
-        print("command data: ",command_data)
         self.ser.write(command_data)  # Sends the command data to the actuator
         # print(self.serial_read_data())
 
