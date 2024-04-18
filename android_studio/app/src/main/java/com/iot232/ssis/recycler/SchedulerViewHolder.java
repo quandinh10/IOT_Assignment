@@ -203,11 +203,11 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
 
     ////SET TIMER/////
 //    private void setTimer(int id) {
-//        mixer1Time.setText(schedulerAdapter.formatTime(Integer.parseInt(str););
-//        mixer2Time.setText(schedulerAdapter.formatTime(mainActivity.schedulerInfos.get(id).mixer2Time));
-//        mixer3Time.setText(schedulerAdapter.formatTime(mainActivity.schedulerInfos.get(id).mixer3Time));
-//        pump1Time.setText(schedulerAdapter.formatTime(mainActivity.schedulerInfos.get(id).pump1Time));
-//        pump2Time.setText(schedulerAdapter.formatTime(mainActivity.schedulerInfos.get(id).pump2Time));
+//        mixer1Time.setText(schedulerAdapter.mainActivity.formatTime(Integer.parseInt(str););
+//        mixer2Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).mixer2Time));
+//        mixer3Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).mixer3Time));
+//        pump1Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).pump1Time));
+//        pump2Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).pump2Time));
 //    }
 
 

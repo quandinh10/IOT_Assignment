@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.iot232.ssis.MainActivity;
 import com.iot232.ssis.R;
-import com.iot232.ssis.data.SchedulerInfo;
+import com.iot232.ssis.data.TimerInfo;
 import com.iot232.ssis.databinding.FragmentAutomationsBinding;
 import com.iot232.ssis.recycler.SchedulerAdapter;
 import com.iot232.ssis.recycler.SchedulerViewInterface;
@@ -27,7 +27,7 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
     MainActivity mainActivity;
     RecyclerView schedulerView;
     SchedulerAdapter schedulerAdapter;
-    List<SchedulerInfo> schedules;
+    List<TimerInfo> schedules;
     public int savedPosition = -1;
     int numUntitled = 0;
 
@@ -42,7 +42,7 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
         assert mainActivity != null;
         mainActivity.checkCurrentFragment();
 
-        schedules = new ArrayList<SchedulerInfo>();
+        schedules = new ArrayList<TimerInfo>();
 
         schedulerView = mView.findViewById(R.id.schedulerView);
         noScheduleText = mView.findViewById(R.id.noScheduleText);
@@ -57,19 +57,19 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
 
     public void addSchedule(){
         Log.d("POSITION", String.valueOf(savedPosition));
-        int id = (savedPosition != -1)? savedPosition : mainActivity.schedulerInfos.size();
+        int id = (savedPosition != -1)? savedPosition : mainActivity.schedulerInfo.size();
         savedPosition = -1;
         String schedulerName = (numUntitled == 0)? "Untitled" : "Untitled " + "(" + String.valueOf(numUntitled) + ")";
-        SchedulerInfo newSchedule = new SchedulerInfo(schedulerName, id, 0, 0, 0, 0, 0, 0, 0);
+        TimerInfo newSchedule = new TimerInfo(schedulerName, id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         schedules.add(newSchedule);
-        mainActivity.schedulerInfos.add(newSchedule);
+        mainActivity.schedulerInfo.add(newSchedule);
         numUntitled++;
-        mainActivity.contentHelper.writeContent(mainActivity.schedulerInfos, "schedulerInfo.json", (MainActivity) mainActivity);
+        mainActivity.contentHelper.writeContent(mainActivity.schedulerInfo, "schedulerInfo.json", (MainActivity) mainActivity);
         showSchedules();
     }
 
     public void loadSchedules(){
-        schedules.addAll(mainActivity.schedulerInfos);
+        schedules.addAll(mainActivity.schedulerInfo);
     }
 
     public void showSchedules(){
@@ -82,7 +82,7 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
     }
 
     private void saveSchedules(){
-        mainActivity.contentHelper.writeContent(mainActivity.schedulerInfos, "schedulerInfo.json", (MainActivity) mainActivity);
+        mainActivity.contentHelper.writeContent(mainActivity.schedulerInfo, "schedulerInfo.json", (MainActivity) mainActivity);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
         savedPosition = position;
         Log.d("POSITION", String.valueOf(savedPosition));
         schedules.remove(position);
-        mainActivity.schedulerInfos.remove(position);
+        mainActivity.schedulerInfo.remove(position);
         schedulerAdapter.notifyItemRemoved(position);
         saveSchedules();
     }
@@ -105,27 +105,27 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
         switch (type){
             case 0:
                 schedules.get(position).setMixer1Time(duration);
-                mainActivity.schedulerInfos.get(position).setMixer1Time(duration);
+                mainActivity.schedulerInfo.get(position).setMixer1Time(duration);
                 break;
             case 1:
                 schedules.get(position).setMixer2Time(duration);
-                mainActivity.schedulerInfos.get(position).setMixer2Time(duration);
+                mainActivity.schedulerInfo.get(position).setMixer2Time(duration);
                 break;
             case 2:
                 schedules.get(position).setMixer3Time(duration);
-                mainActivity.schedulerInfos.get(position).setMixer3Time(duration);
+                mainActivity.schedulerInfo.get(position).setMixer3Time(duration);
                 break;
             case 3:
                 schedules.get(position).setPump1Time(duration);
-                mainActivity.schedulerInfos.get(position).setPump1Time(duration);
+                mainActivity.schedulerInfo.get(position).setPump1Time(duration);
                 break;
             case 4:
                 schedules.get(position).setPump2Time(duration);
-                mainActivity.schedulerInfos.get(position).setPump2Time(duration);
+                mainActivity.schedulerInfo.get(position).setPump2Time(duration);
                 break;
             case 5:
                 schedules.get(position).setAreaType(duration);
-                mainActivity.schedulerInfos.get(position).setAreaType(duration);
+                mainActivity.schedulerInfo.get(position).setAreaType(duration);
                 break;
             default:
                 break;

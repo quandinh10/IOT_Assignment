@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.github.mikephil.charting.data.Entry;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -29,6 +32,7 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,7 +43,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.iot232.ssis.data.AdaInfo;
-import com.iot232.ssis.data.SchedulerInfo;
 import com.iot232.ssis.data.TimerInfo;
 import com.iot232.ssis.data.UserInfo;
 import com.iot232.ssis.databinding.ActivityMainBinding;
@@ -78,12 +81,13 @@ public class MainActivity extends AppCompatActivity {
     public ContentHelper contentHelper;
     public AdaInfo adaInfo;
     public TimerInfo timerInfo;
-    public List<SchedulerInfo> schedulerInfos;
+    public List<TimerInfo> schedulerInfo;
     public UserInfo userInfo;
     public ArrayList<Entry> tempEntries, humidEntries;
     public int taskCount = 0;
 
-    TextView currentDate, currentDay;
+    Handler handler = new Handler();
+    Runnable timerRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,19 +117,19 @@ public class MainActivity extends AppCompatActivity {
         adaInfo = new AdaInfo();
         userInfo = new UserInfo();
         timerInfo = new TimerInfo();
-        schedulerInfos = new ArrayList<SchedulerInfo>();
+        schedulerInfo = new ArrayList<TimerInfo>();
         contentHelper = new ContentHelper(this);
 
         TypeToken<AdaInfo> adaInfoTypeToken = new TypeToken<AdaInfo>() {};
         TypeToken<UserInfo> userInfoTypeToken = new TypeToken<UserInfo>() {};
         TypeToken<TimerInfo> timerInfoTypeToken = new TypeToken<TimerInfo>() {};
-        TypeToken<ArrayList<SchedulerInfo>> listTypeToken = new TypeToken<ArrayList<SchedulerInfo>>() {};
+        TypeToken<ArrayList<TimerInfo>> listTypeToken = new TypeToken<ArrayList<TimerInfo>>() {};
 
         //////Load content//////
         if (contentHelper.loadContent(adaInfoTypeToken, "adaInfo.json",this) != null) adaInfo = contentHelper.loadContent(adaInfoTypeToken, "adaInfo.json",this);
         if (contentHelper.loadContent(userInfoTypeToken, "userInfo.json",this) != null) userInfo = contentHelper.loadContent(userInfoTypeToken, "userInfo.json",this);
         if (contentHelper.loadContent(timerInfoTypeToken, "timerInfo.json",this) != null) timerInfo = contentHelper.loadContent(timerInfoTypeToken, "timerInfo.json",this);
-        if (contentHelper.loadContent(listTypeToken, "schedulerInfo.json",this) != null) schedulerInfos = contentHelper.loadContent(listTypeToken, "schedulerInfo.json", this);
+        if (contentHelper.loadContent(listTypeToken, "schedulerInfo.json",this) != null) schedulerInfo = contentHelper.loadContent(listTypeToken, "schedulerInfo.json", this);
 
         if (savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new HomeFragment(), "HomeFragment").commit();
@@ -240,10 +244,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        getEntries();
-
-
-
         ///////////END OF ONCREATE///////////
     }
 
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
         contentHelper.writeContent(adaInfo, "adaInfo.json", this);
         contentHelper.writeContent(userInfo, "userInfo.json", this);
         contentHelper.writeContent(timerInfo, "timerInfo.json",this);
-        contentHelper.writeContent(schedulerInfos, "schedulerInfo.json",this);
+        contentHelper.writeContent(schedulerInfo, "schedulerInfo.json",this);
         super.onDestroy();
     }
 
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
+    /////////////////////
 
 
     /////SHARE APP//////
@@ -336,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
 
         if (client.isConnected()) {
+            getEntries();
             progressDialog.dismiss();
 
             client.setCallback(new MqttCallbackExtended() {
@@ -427,6 +428,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else binding.appBarMain.fab.show();
     }
+    ///////////////////////////
 
 
     /////GET ENTRIES FOR GRAPH/////
@@ -489,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
         humidGetter.execute();
     }
 
+    ////ENTRIES COMPLETED/////
     private void taskCompleted(){
         taskCount++;
         if (taskCount == 2){
@@ -499,6 +502,63 @@ public class MainActivity extends AppCompatActivity {
                 ((HomeFragment) currentFragment).drawGraph(0, tempEntries, humidEntries);
             }
         }
+    }
+
+    /////TIMERS////////
+    public void startTimer(int type) {
+        int[] durations = {0, timerInfo.getMixer1Time(), timerInfo.getMixer2Time(), timerInfo.getMixer3Time(), timerInfo.getPump1Time(), timerInfo.getPump2Time()};
+        int duration = durations[type];
+
+        if (type <= 3) timerInfo.setMixerState(type);
+        else timerInfo.setPumpState(type);
+
+        ////TODO SEND MQTT//////
+
+        timerRunnable = new Runnable() {
+            int i = duration;
+
+            @Override
+            public void run() {
+                i--;
+                Fragment currentFragment = getCurrentFragment();
+                if (i > 0) {
+                    if (currentFragment instanceof DashboardFragment) Objects.requireNonNull(getTextView(type)).setText(formatTime(i));
+                    Log.d("TIMER", String.valueOf(i));
+                    handler.postDelayed(this, 1000);
+                }
+                else {
+                    if (currentFragment instanceof DashboardFragment) ((DashboardFragment) currentFragment).buttonPressed(type, false);
+                    stopTimer(type);
+                }
+            }
+        };
+
+        handler.postDelayed(timerRunnable, 1000);
+    }
+
+    public void stopTimer(int type){
+        handler.removeCallbacks(timerRunnable);
+        if (type <= 3) timerInfo.setMixerState(0);
+        else timerInfo.setPumpState(0);
+    }
+
+    private TextView getTextView(int type){
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment instanceof DashboardFragment) {
+            if (type == 1) return ((DashboardFragment) currentFragment).getMixer1Time();
+            else if (type == 2) return ((DashboardFragment) currentFragment).getMixer2Time();
+            else if (type == 3) return ((DashboardFragment) currentFragment).getMixer3Time();
+            else if (type == 4) return ((DashboardFragment) currentFragment).getPump1Time();
+            else if (type == 5) return ((DashboardFragment) currentFragment).getPump2Time();
+        }
+        return null;
+    }
+
+    ////CHANGE INT TO MM:SS/////
+    public String formatTime(int totalSeconds) {
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
 

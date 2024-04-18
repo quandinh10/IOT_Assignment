@@ -86,8 +86,7 @@ public class ConnectInfoActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConnectInfoActivity.this, MainActivity.class);
-                startActivity(intent);
+                onBackPressed();
             }
         });
 
