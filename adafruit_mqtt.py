@@ -42,4 +42,3 @@ class Adafruit_MQTT:
         self.client.on_subscribe = self.subscribe
         self.client.connect()
         self.client.loop_background()
-

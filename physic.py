@@ -1,7 +1,7 @@
 import sys
 import time
 import serial.tools.list_ports
-
+from adafruit_mqtt import *
 MIXER1 = 2
 MIXER2 = 3
 MIXER3 = 4
@@ -92,9 +92,11 @@ class Physic:
 
 if __name__ == '__main__':
     physic = Physic()  # Initialize the class with debug mode enabled
+    client = Adafruit_MQTT()  # Initialize the Adafruit_MQTT class
 
     # Test sequence for actuators and sensors
     while True:
+        time.sleep(5)
         # Testing actuator control
         # print("Testing Actuators with ID 2: ")
         # print("Turn on relay_2: ")
@@ -107,6 +109,7 @@ if __name__ == '__main__':
         # Testing sensor reading
         print("\nTesting reading sensor: ")
         print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
-        time.sleep(1)
-        print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+        client.publish("temperature", physic.readSensors("soil_temperature"))
         time.sleep(5)
+        print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+        client.publish("moisture", physic.readSensors("soil_moisture"))
