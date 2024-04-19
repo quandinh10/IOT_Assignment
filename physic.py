@@ -91,7 +91,7 @@ class Physic:
         
 
 if __name__ == '__main__':
-    physic = Physic(True)  # Initialize the class with debug mode enabled
+    physic = Physic()  # Initialize the class with debug mode enabled
 
     # Test sequence for actuators and sensors
     while True:
