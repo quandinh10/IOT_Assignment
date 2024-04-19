@@ -1,13 +1,14 @@
 import sys
 from Adafruit_IO import MQTTClient
 import os
-import dotenv
-dotenv.load_dotenv()
+from dotenv import dotenv_values
+
+env = dotenv_values(".env")
 
 class Adafruit_MQTT:
     AIO_FEED_IDs_sub = ["data"]
-    AIO_USERNAME = os.getenv("AIO_USERNAME")
-    AIO_KEY = os.getenv("AIO_KEY")
+    AIO_USERNAME = env["AIO_USERNAME"]
+    AIO_KEY = env["AIO_KEY"]
 
     recvCallBack = None
     client = None
