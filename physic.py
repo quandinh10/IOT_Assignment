@@ -108,8 +108,8 @@ if __name__ == '__main__':
 
         # Testing sensor reading
         print("\nTesting reading sensor: ")
-        print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
+        # print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
         client.publish("temperature", physic.readSensors("soil_temperature"))
         time.sleep(5)
-        print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+        # print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
         client.publish("moisture", physic.readSensors("soil_moisture"))
