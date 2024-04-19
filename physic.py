@@ -62,7 +62,7 @@ class Physic:
         if bytesToRead > 0:
             out = self.ser.read(bytesToRead)
             data_array = [b for b in out]  # Converts the bytes to a list for easier processing
-            print(data_array)
+            # print(data_array)
             if len(data_array) >= 7:
                 array_size = len(data_array)
                 value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         # time.sleep(2)
 
         # Testing sensor reading
-        print("\nTesting reading sensor: ")
+        # print("\nTesting reading sensor: ")
         # print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
         client.publish("temperature", physic.readSensors("soil_temperature"))
         time.sleep(5)
