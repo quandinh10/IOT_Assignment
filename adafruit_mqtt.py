@@ -1,14 +1,14 @@
 import sys
 from Adafruit_IO import MQTTClient
 import os
-from dotenv import dotenv_values
+from dotenv import *
+dotenv = DotEnv() 
 
-env = dotenv_values(".env")
 
 class Adafruit_MQTT:
     AIO_FEED_IDs_sub = ["data"]
-    AIO_USERNAME = env["AIO_USERNAME"]
-    AIO_KEY = env["AIO_KEY"]
+    AIO_USERNAME = dotenv.get("AIO_USERNAME")
+    AIO_KEY = dotenv.get("AIO_KEY")
 
     recvCallBack = None
     client = None
@@ -43,3 +43,6 @@ class Adafruit_MQTT:
         self.client.on_subscribe = self.subscribe
         self.client.connect()
         self.client.loop_background()
+client = Adafruit_MQTT()  # Initialize the Adafruit_MQTT class
+while True:
+    pass
