@@ -96,17 +96,17 @@ if __name__ == '__main__':
     # Test sequence for actuators and sensors
     while True:
         # Testing actuator control
-        print("Testing Actuators with ID 2: ")
-        print("Turn on relay_2: ")
-        physic.setActuators(2, True)  # Turn on relay 2
-        time.sleep(2)
-        print("Turn off relay_2: ")
-        physic.setActuators(2, False)  # Turn off relay 2
-        time.sleep(2)
+        # print("Testing Actuators with ID 2: ")
+        # print("Turn on relay_2: ")
+        # physic.setActuators(2, True)  # Turn on relay 2
+        # time.sleep(2)
+        # print("Turn off relay_2: ")
+        # physic.setActuators(2, False)  # Turn off relay 2
+        # time.sleep(2)
 
         # Testing sensor reading
-        # print("\nTesting reading sensor: ")
-        # print("Soil temperature: ", physic.readSensors(TEMP))  # Read and print soil temperature
-        # time.sleep(1)
-        # print("Soil moisture: ", physic.readSensors(MOISTURE))  # Read and print soil moisture
-        # time.sleep(5)
+        print("\nTesting reading sensor: ")
+        print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
+        time.sleep(1)
+        print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+        time.sleep(5)
