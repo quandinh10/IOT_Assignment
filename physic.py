@@ -112,3 +112,4 @@ if __name__ == '__main__':
         client.publish("temperature", physic.readSensors("soil_temperature"))
         time.sleep(5)
         print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+        client.publish("moisture", physic.readSensors("soil_moisture"))
