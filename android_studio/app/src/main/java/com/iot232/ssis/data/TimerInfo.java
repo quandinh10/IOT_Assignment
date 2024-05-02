@@ -1,38 +1,85 @@
 package com.iot232.ssis.data;
 
 public class TimerInfo {
-    private int id, schedulerState, startTime, mixer1Time, mixer2Time, mixer3Time, areaType, pump1Time, pump2Time,
-            mixerState, pumpState;
+    private int id;
+    private int schedulerState;
+    private int mixer1Time;
+    private int mixer2Time;
+    private int mixer3Time;
+    private int areaType;
+    private int pump1Time;
+    private int pump2Time;
+    private int mixerState;
+    private int pumpState;
+
+    public int getCycleCount() {
+        return cycleCount;
+    }
+
+    public void setCycleCount(int cycleCount) {
+        this.cycleCount = cycleCount;
+    }
+
+    private int cycleCount;
+    private long mixerStart, pumpStart;
     private String schedulerTitle;
 
     public TimerInfo() {
         this.schedulerTitle = "";
         this.schedulerState = 0;
-        this.startTime = 0;
-        this.id = -1;
+        this.id = 0;
+
+        this.mixerState = 0;
+        this.mixerStart = 0;
         this.mixer1Time = 0;
         this.mixer2Time = 0;
         this.mixer3Time = 0;
-        this.areaType = 0;
+
+        this.pumpState = 0;
+        this.pumpStart = 0;
         this.pump1Time = 0;
         this.pump2Time = 0;
-        this.mixerState = 0;
-        this.pumpState = 0;
+
+        this.cycleCount = 0;
+
+        this.areaType = 0;
     }
 
-    public TimerInfo(String schedulerTitle, int id, int schedulerState, int startTime, int areaType, int mixer1Time, int mixer2Time, int mixer3Time, int pump1Time, int pump2Time, int mixerState, int pumpState) {
+    public long getMixerStart() {
+        return mixerStart;
+    }
+
+    public void setMixerStart(long mixerStart) {
+        this.mixerStart = mixerStart;
+    }
+
+    public long getPumpStart() {
+        return pumpStart;
+    }
+
+    public void setPumpStart(long pumpStart) {
+        this.pumpStart = pumpStart;
+    }
+
+    public TimerInfo(String schedulerTitle, int id, int schedulerState, int areaType, int mixerState, long mixerStart, int mixer1Time, int mixer2Time, int mixer3Time, int pumpState, long pumpStart, int pump1Time, int pump2Time, int cycleCount) {
         this.id = id;
         this.schedulerState = schedulerState;
         this.schedulerTitle = schedulerTitle;
-        this.startTime = startTime;
+
+        this.mixerState = mixerState;
+        this.mixerStart = mixerStart;
         this.mixer1Time = mixer1Time;
         this.mixer2Time = mixer2Time;
-        this.areaType = areaType;
         this.mixer3Time = mixer3Time;
+
+        this.pumpState = pumpState;
+        this.pumpStart = pumpStart;
         this.pump1Time = pump1Time;
         this.pump2Time = pump2Time;
-        this.mixerState = mixerState;
-        this.pumpState = pumpState;
+
+        this.areaType = areaType;
+        this.cycleCount = cycleCount;
+
     }
 
     public int getId() {
@@ -49,14 +96,6 @@ public class TimerInfo {
 
     public void setSchedulerState(int schedulerState) {
         this.schedulerState = schedulerState;
-    }
-
-    public int getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(int startTime) {
-        this.startTime = startTime;
     }
 
     public int getMixer1Time() {

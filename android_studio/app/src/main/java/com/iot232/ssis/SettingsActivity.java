@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         timerInfo = new TimerInfo();
         adaInfo = new AdaInfo();
-        userInfo = new UserInfo();
+        userInfo = new UserInfo("", "", "" , "" , "", "", "1");
 
         erased = 0;
 
