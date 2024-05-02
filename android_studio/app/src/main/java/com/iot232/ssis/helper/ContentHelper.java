@@ -23,12 +23,8 @@ public class ContentHelper {
     @SuppressLint("StaticFieldLeak")
     static Activity activity;
     public ContentHelper(Context context){
-        if (context instanceof MainActivity) {
-            activity = (MainActivity) context;
-        }
-        else if (context instanceof SettingsActivity) {
-            activity = (SettingsActivity) context;
-        }
+        if (context instanceof MainActivity) activity = (MainActivity) context;
+        else if (context instanceof SettingsActivity) activity = (SettingsActivity) context;
     }
     public <T> T loadContent(TypeToken<T> typeToken, String child, Activity activity) {
         File path = activity.getApplicationContext().getFilesDir();
@@ -76,6 +72,16 @@ public class ContentHelper {
         printContentJson(child, activity);
     }
 
+    public String convertContent(Object info){
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            return gson.toJson(info);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void printContentJson(String child, Activity activity) {
         File path = activity.getFilesDir();
         File jsonFile = new File(path, child);
@@ -89,9 +95,7 @@ public class ContentHelper {
             String line;
 
             // Read each line of the file and append it to the content StringBuilder
-            while ((line = br.readLine()) != null) {
-                content.append(line);
-            }
+            while ((line = br.readLine()) != null) content.append(line);
 
             // Log the content of the JSON file
             Log.d(child, content.toString());
@@ -113,9 +117,8 @@ public class ContentHelper {
             if (fileToDelete.exists()) {
                 fileToDelete.delete();
                 Log.d("CONTENT", "File deleted: " + child);
-            } else {
-                Log.d("CONTENT", "File does not exist: " + child);
             }
+            else Log.d("CONTENT", "File does not exist: " + child);
         } catch (Exception e) {
             e.printStackTrace();
         }
