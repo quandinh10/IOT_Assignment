@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,15 +61,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     AlertDialog.Builder alertDialog;
 
-    AppBarConfiguration sideAppBarConfiguration, bottomAppBarConfiguration;
+    AppBarConfiguration sideAppBarConfiguration;
     public ActivityMainBinding binding;
     NavController navController;
     BottomNavigationView bottomNavView;
@@ -85,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     public UserInfo userInfo;
     public ArrayList<Entry> tempEntries, humidEntries;
     public int taskCount = 0;
+    public final int NAN = 0, MIXER1 = 1, MIXER2 = 2, MIXER3 = 3, PUMP1 = 10,
+            PUMP2 = 11, AREA1 = 20, AREA2 = 21, AREA3 = 22, NO_TIMER = 30, NO_ACTION = 31;
 
     Handler handler = new Handler();
     Runnable timerRunnable;
@@ -105,13 +114,11 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setSubtitle("");
         setSupportActionBar(toolbar);
 
-
         ////SIDE DRAWER//////
         sideDrawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, sideDrawer, toolbar, R.string.open_nav, R.string.close_nav);
         sideDrawer.addDrawerListener(toggle);
         toggle.syncState();
-
 
         ////INITALIZE INFO//////
         adaInfo = new AdaInfo();
@@ -158,10 +165,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-
         //////MQTT///////
         startMQTT();
-
 
         //////Floating action button////////
         checkCurrentFragment();
@@ -211,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         /////Bottom navigation panel//////
         bottomNavView = binding.appBarMain.bottomNavView;
         bottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -242,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
             openFragment(new HomeFragment());
             navView.setCheckedItem(R.id.nav_home);
         }
-
 
         ///////////END OF ONCREATE///////////
     }
@@ -279,10 +282,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.fragment_container);
-        return NavigationUI.navigateUp(navController, sideAppBarConfiguration)
-                || super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, sideAppBarConfiguration) || super.onSupportNavigateUp();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        long currentTime = getCurrentEpochTime();
+        int mixerState = timerInfo.getMixerState();
+        int pumpState = timerInfo.getPumpState();
+        int mixerDelta = (int) (currentTime - timerInfo.getMixerStart());
+        int pumpDelta = (int) (currentTime - timerInfo.getPumpStart());
+        if (timerInfo.getMixerState() >= MIXER1 && timerInfo.getMixerState() <= MIXER3)
+            startTimer(mixerState, mixerDelta);
+        if (timerInfo.getPumpState() >= PUMP1 && timerInfo.getPumpState() <= PUMP2)
+            startTimer(pumpState, pumpDelta);
+    }
 
     private void openFragment(Fragment fragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -294,16 +309,14 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (sideDrawer.isDrawerOpen(GravityCompat.START)) {
             sideDrawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
+        else super.onBackPressed();
     }
     /////////////////////
 
 
     /////SHARE APP//////
     private void shareApp(@NonNull Context context) {
-        // code here
         final String appPackageName = context.getPackageName();
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -430,7 +443,6 @@ public class MainActivity extends AppCompatActivity {
     }
     ///////////////////////////
 
-
     /////GET ENTRIES FOR GRAPH/////
     public void getEntries(){
         progressDialog.setMessage("Fetching data...");
@@ -505,17 +517,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /////TIMERS////////
-    public void startTimer(int type) {
-        int[] durations = {0, timerInfo.getMixer1Time(), timerInfo.getMixer2Time(), timerInfo.getMixer3Time(), timerInfo.getPump1Time(), timerInfo.getPump2Time()};
-        int duration = durations[type];
+    public void startTimer(int type, int delta) {
+        int duration = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(MIXER1, timerInfo.getMixer1Time());
+        map.put(MIXER2, timerInfo.getMixer2Time());
+        map.put(MIXER3, timerInfo.getMixer3Time());
+        map.put(PUMP1, timerInfo.getPump1Time());
+        map.put(PUMP2, timerInfo.getPump2Time());
 
-        if (type <= 3) timerInfo.setMixerState(type);
-        else timerInfo.setPumpState(type);
+        duration = (delta == 0)? map.get(type) : map.get(type) - delta;
+        if (type >= MIXER1 && type <= MIXER3) {
+            timerInfo.setMixerState(type);
+            if (delta == 0) {
+                timerInfo.setMixerStart(getCurrentEpochTime());
+                sendSchedule(type, duration, "mixer", MIXER1);
+            }
+        }
+        else if (type >= PUMP1 && type <= PUMP2) {
+            timerInfo.setPumpState(type);
+            if (delta == 0) {
+                timerInfo.setPumpStart(getCurrentEpochTime());
+                sendSchedule(type, duration, "pump", PUMP1);
+            }
 
-        ////TODO SEND MQTT//////
+        }
 
+        int finalDuration = duration;
         timerRunnable = new Runnable() {
-            int i = duration;
+            int i = finalDuration;
 
             @Override
             public void run() {
@@ -538,20 +568,31 @@ public class MainActivity extends AppCompatActivity {
 
     public void stopTimer(int type){
         handler.removeCallbacks(timerRunnable);
-        if (type <= 3) timerInfo.setMixerState(0);
-        else timerInfo.setPumpState(0);
+        if (type >= MIXER1 && type <= MIXER3) {
+            timerInfo.setMixerState(NAN);
+            timerInfo.setMixerStart(0);
+        }
+        else if (type >= PUMP1 && type <= PUMP2) {
+            timerInfo.setPumpState(NAN);
+            timerInfo.setPumpStart(0);
+        }
     }
 
     private TextView getTextView(int type){
         Fragment currentFragment = getCurrentFragment();
         if (currentFragment instanceof DashboardFragment) {
-            if (type == 1) return ((DashboardFragment) currentFragment).getMixer1Time();
-            else if (type == 2) return ((DashboardFragment) currentFragment).getMixer2Time();
-            else if (type == 3) return ((DashboardFragment) currentFragment).getMixer3Time();
-            else if (type == 4) return ((DashboardFragment) currentFragment).getPump1Time();
-            else if (type == 5) return ((DashboardFragment) currentFragment).getPump2Time();
+            if (type == MIXER1) return ((DashboardFragment) currentFragment).getMixer1Time();
+            else if (type == MIXER2) return ((DashboardFragment) currentFragment).getMixer2Time();
+            else if (type == MIXER3) return ((DashboardFragment) currentFragment).getMixer3Time();
+            else if (type == PUMP1) return ((DashboardFragment) currentFragment).getPump1Time();
+            else if (type == PUMP2) return ((DashboardFragment) currentFragment).getPump2Time();
         }
         return null;
+    }
+
+    public static long getCurrentEpochTime() {
+        long currentTimeMillis = System.currentTimeMillis();
+        return currentTimeMillis / 1000;
     }
 
     ////CHANGE INT TO MM:SS/////
@@ -559,6 +600,34 @@ public class MainActivity extends AppCompatActivity {
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    public String formatTime(long totalSeconds){
+        Date date = new Date(totalSeconds * 1000);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC+7"));
+        return sdf.format(date);
+    }
+
+    public void sendSchedule(int type, int duration, String str, int base){
+        String payload = "{\"" + str + (type - base + 1) + "\":" + duration + "}";
+        client.sendDataMQTT("project_IOT_hcmut/feeds/data", payload);
+    }
+
+    public void sendSchedule(int pos){
+        char selector =  (char) ('A' + schedulerInfo.get(pos).getAreaType() - 1);
+//        {"mixer1": 5, "mixer2": 5, "mixer3": 5, "pump_in": 5, "pump_out": 5, "selector": "A", "cycle": 2, "startTime": "13:51"}
+        String payload = "{" +
+                "\"mixer1\": " + schedulerInfo.get(pos).getMixer1Time() + ", " +
+                "\"mixer2\": " + schedulerInfo.get(pos).getMixer2Time() + ", " +
+                "\"mixer3\": " + schedulerInfo.get(pos).getMixer3Time() + ", " +
+                "\"pump_in\": " + schedulerInfo.get(pos).getPump1Time() + ", " +
+                "\"pump_out\": " + schedulerInfo.get(pos).getPump2Time() + ", " +
+                "\"selector\": \"" + selector + "\", " +
+                "\"cycle\": " + schedulerInfo.get(pos).getCycleCount() + ", " +
+                "\"startTime\": " + formatTime(schedulerInfo.get(pos).getMixerStart()) +
+                "}";
+        client.sendDataMQTT("project_IOT_hcmut/feeds/data", payload);
     }
 
 

@@ -18,6 +18,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import java.nio.charset.Charset;
+
 
 public class MqttHelper {
     private AdaInfo adaInfo;
@@ -66,5 +68,22 @@ public class MqttHelper {
 
     public boolean isConnected(){
         return client.isConnected();
+    }
+
+    public void sendDataMQTT(String topic, String value) {
+        MqttMessage msg = new MqttMessage();
+        msg.setId(1234);
+        msg.setQos(0);
+        msg.setRetained(false);
+
+        byte[] b = value.getBytes(Charset.forName("UTF-8"));
+        msg.setPayload(b);
+
+        try {
+            client.publish(topic, msg);
+        } catch (MqttException e) {
+            Log.d("SEND", "CANNOT SEND");
+            e.printStackTrace();
+        }
     }
 }

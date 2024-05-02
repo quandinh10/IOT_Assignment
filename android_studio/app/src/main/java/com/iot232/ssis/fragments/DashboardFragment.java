@@ -35,8 +35,8 @@ public class DashboardFragment extends Fragment {
     ToggleButton mixer1Button, mixer2Button, mixer3Button, area1Button, area2Button, area3Button, pump1Button, pump2Button;
     TextView mixerTitle, areaTitle, pumpTitle;
 
-    public final int NAN = 0, MIXER1 = 1, MIXER2 = 2, MIXER3 = 3, PUMP1 = 4,
-            PUMP2 = 5, AREA1 = 6, AREA2 = 7, AREA3 = 8, NO_TIMER = 9, NO_ACTION = 10;
+    public final int NAN = 0, MIXER1 = 1, MIXER2 = 2, MIXER3 = 3, PUMP1 = 10,
+            PUMP2 = 11, AREA1 = 20, AREA2 = 21, AREA3 = 22, NO_TIMER = 30, NO_ACTION = 31;
 
     private FragmentDashboardBinding binding;
 
@@ -79,18 +79,21 @@ public class DashboardFragment extends Fragment {
         pumpTitle = mView.findViewById(R.id.pumpText);
 
         /////SET TIMER OF RELAYS////
-        for (int i = 1; i < 6; i++) setTimer(i);
+        setTimer(MIXER1);
+        setTimer(MIXER2);
+        setTimer(MIXER3);
+        setTimer(PUMP1);
+        setTimer(PUMP2);
 
         /////INIT BUTTON STATE/////
-        mixer1Button.setChecked(mainActivity.timerInfo.getMixerState() == 1);
-        mixer2Button.setChecked(mainActivity.timerInfo.getMixerState() == 2);
-        mixer3Button.setChecked(mainActivity.timerInfo.getMixerState() == 3);
-        pump1Button.setChecked(mainActivity.timerInfo.getPumpState() == 1);
-        pump2Button.setChecked(mainActivity.timerInfo.getPumpState() == 2);
-        area1Button.setChecked(mainActivity.timerInfo.getAreaType() == 1);
-        area2Button.setChecked(mainActivity.timerInfo.getAreaType() == 2);
-        area3Button.setChecked(mainActivity.timerInfo.getAreaType() == 3);
-
+        mixer1Button.setChecked(mainActivity.timerInfo.getMixerState() == MIXER1);
+        mixer2Button.setChecked(mainActivity.timerInfo.getMixerState() == MIXER2);
+        mixer3Button.setChecked(mainActivity.timerInfo.getMixerState() == MIXER3);
+        pump1Button.setChecked(mainActivity.timerInfo.getPumpState() == PUMP1);
+        pump2Button.setChecked(mainActivity.timerInfo.getPumpState() == PUMP2);
+        area1Button.setChecked(mainActivity.timerInfo.getAreaType() == AREA1);
+        area2Button.setChecked(mainActivity.timerInfo.getAreaType() == AREA2);
+        area3Button.setChecked(mainActivity.timerInfo.getAreaType() == AREA3);
 
         //////CHANGE DURATION/////////
         mixer1Card.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +127,6 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-
         ///////BUTTONS////////
         mixer1Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,12 +158,12 @@ public class DashboardFragment extends Fragment {
         area1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getAreaType() == 1) {
-                    mainActivity.timerInfo.setAreaType(0);
+                if (mainActivity.timerInfo.getAreaType() == AREA1) {
+                    mainActivity.timerInfo.setAreaType(NAN);
                     buttonPressed(AREA1, false);
                 }
                 else {
-                    mainActivity.timerInfo.setAreaType(1);
+                    mainActivity.timerInfo.setAreaType(AREA1);
                     buttonPressed(AREA1, true);
                     buttonPressed(AREA2, false);
                     buttonPressed(AREA3, false);
@@ -171,12 +173,12 @@ public class DashboardFragment extends Fragment {
         area2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getAreaType() == 2) {
-                    mainActivity.timerInfo.setAreaType(0);
+                if (mainActivity.timerInfo.getAreaType() == AREA2) {
+                    mainActivity.timerInfo.setAreaType(NAN);
                     buttonPressed(AREA2, false);
                 }
                 else {
-                    mainActivity.timerInfo.setAreaType(2);
+                    mainActivity.timerInfo.setAreaType(AREA2);
                     buttonPressed(AREA2, true);
                     buttonPressed(AREA1, false);
                     buttonPressed(AREA3, false);
@@ -187,12 +189,12 @@ public class DashboardFragment extends Fragment {
         area3Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getAreaType() == 3) {
-                    mainActivity.timerInfo.setAreaType(0);
+                if (mainActivity.timerInfo.getAreaType() == AREA3) {
+                    mainActivity.timerInfo.setAreaType(NAN);
                     buttonPressed(AREA3, false);
                 }
                 else {
-                    mainActivity.timerInfo.setAreaType(3);
+                    mainActivity.timerInfo.setAreaType(AREA3);
                     buttonPressed(AREA3, true);
                     buttonPressed(AREA2, false);
                     buttonPressed(AREA1, false);
@@ -219,9 +221,9 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-
         return mView;
     }
+    //////////////////////
 
     @Override
     public void onDestroyView() {
@@ -248,7 +250,6 @@ public class DashboardFragment extends Fragment {
         insertText.setHint("Duration");
         insertText.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-        //////CONNECT/////
         Button popupButton1 = view.findViewById(R.id.popup_button1);
         popupButton1.setText("Cancel");
         popupButton1.setOnClickListener(new View.OnClickListener() {
@@ -257,9 +258,7 @@ public class DashboardFragment extends Fragment {
                 alertDialog.dismiss();
             }
         });
-        //////////////////
 
-        /////TRY AGAIN////
         Button popupButton2 = view.findViewById(R.id.popup_button2);
         popupButton2.setText("Change");
         popupButton2.setOnClickListener(new View.OnClickListener() {
@@ -272,64 +271,12 @@ public class DashboardFragment extends Fragment {
 
             }
         });
-        ///////////////
 
         if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
     }
-
-    /////CHANGE FEED POPUP//////
-    public void changeFeed(int id, String title) {
-        ConstraintLayout constraintLayout = mView.findViewById(R.id.popupDialog);
-        View view = LayoutInflater.from(mainActivity).inflate(R.layout.popup_layout, constraintLayout);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-        builder.setView(view);
-        AlertDialog alertDialog = builder.create();
-
-        TextView notiText = view.findViewById(R.id.popup_title);
-        notiText.setText(title);
-
-        TextView popupText = view.findViewById(R.id.popup_desc);
-        popupText.setText("Enter a feed");
-
-        EditText insertText = view.findViewById(R.id.popup_insert);
-        insertText.setHint("Feed");
-
-        //////CONNECT/////
-        Button popupButton1 = view.findViewById(R.id.popup_button1);
-        popupButton1.setText("Cancel");
-        popupButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        //////////////////
-
-        /////TRY AGAIN////
-        Button popupButton2 = view.findViewById(R.id.popup_button2);
-        popupButton2.setText("Change");
-        popupButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(insertText.getText().toString())) {
-                    saveChange(id, insertText.getText().toString());
-                    alertDialog.dismiss();
-                } else insertText.setError("Please enter a valid feed");
-
-            }
-        });
-        ///////////////
-
-        if (alertDialog.getWindow() != null) {
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        alertDialog.show();
-    }
-
 
     /////INVALID ACTION POPUP/////
     ////2 TYPE - NO_ACTION & NO_TIMER/////
@@ -385,7 +332,7 @@ public class DashboardFragment extends Fragment {
         else if (type == PUMP1) mainActivity.timerInfo.setPump1Time(Integer.parseInt(str));
         else if (type == PUMP2) mainActivity.timerInfo.setPump2Time(Integer.parseInt(str));
         setTimer(type);
-        mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "timerInfo.json", (MainActivity) mainActivity);
+        mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "timerInfo.json", mainActivity);
     }
 
     ////SET TIMER/////
@@ -408,7 +355,7 @@ public class DashboardFragment extends Fragment {
         else if (type == AREA2) area2Button.setChecked(status);
         else if (type == AREA3) area3Button.setChecked(status);
         if (AREA1 <= type && type <= AREA3) return;
-        if (status) mainActivity.startTimer(type);
+        if (status) mainActivity.startTimer(type, 0);
         else{
             setTimer(type);
             mainActivity.stopTimer(type);
