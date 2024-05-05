@@ -90,26 +90,26 @@ class Physic:
         
         
 
-if __name__ == '__main__':
-    physic = Physic()  # Initialize the class with debug mode enabled
-    client = Adafruit_MQTT()  # Initialize the Adafruit_MQTT class
+# if __name__ == '__main__':
+#     physic = Physic()  # Initialize the class with debug mode enabled
+#     client = Adafruit_MQTT()  # Initialize the Adafruit_MQTT class
 
-    # Test sequence for actuators and sensors
-    # while True:
-    #     time.sleep(5)
-        # Testing actuator control
-        # print("Testing Actuators with ID 2: ")
-        # print("Turn on relay_2: ")
-        # physic.setActuators(2, True)  # Turn on relay 2
-        # time.sleep(2)
-        # print("Turn off relay_2: ")
-        # physic.setActuators(2, False)  # Turn off relay 2
-        # time.sleep(2)
+#     # Test sequence for actuators and sensors
+#     # while True:
+#     #     time.sleep(5)
+#         # Testing actuator control
+#         # print("Testing Actuators with ID 2: ")
+#         # print("Turn on relay_2: ")
+#         # physic.setActuators(2, True)  # Turn on relay 2
+#         # time.sleep(2)
+#         # print("Turn off relay_2: ")
+#         # physic.setActuators(2, False)  # Turn off relay 2
+#         # time.sleep(2)
 
-        # Testing sensor reading
-        # print("\nTesting reading sensor: ")
-        # print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
-        # client.publish("temperature", physic.readSensors("soil_temperature"))
-        # time.sleep(5)
-        # print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
-        # client.publish("moisture", physic.readSensors("soil_moisture"))
+#         # Testing sensor reading
+#         # print("\nTesting reading sensor: ")
+#         # print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
+#         # client.publish("temperature", physic.readSensors("soil_temperature"))
+#         # time.sleep(5)
+#         # print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+#         # client.publish("moisture", physic.readSensors("soil_moisture"))
