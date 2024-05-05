@@ -63,11 +63,12 @@ setTimer(2,10)
 while True:
     timerRun()
     
-    sched1.run()
-    if (timer_flag[1]):
-        setTimer(1,10)
-        client.publish("moisture", physic1.readSensors(MOISTURE))
-        client.publish("temperature", physic1.readSensors(TEMP))
+    ### Uncomment below code to enable sending moi and tmp to server ###
+    # sched1.run()
+    # if (timer_flag[1]):
+    #     setTimer(1,10)
+        # client.publish("moisture", physic1.readSensors(MOISTURE))
+        # client.publish("temperature", physic1.readSensors(TEMP))
         
     # if (timer_flag[2]):
     #     setTimer(2,10)
