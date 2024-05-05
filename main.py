@@ -46,8 +46,8 @@ def received(feed_id, payload):
 client = Adafruit_MQTT()
 client.setRecvCallBack(received)
 
-# physic1 = Physic()
-physic1 = None
+physic1 = Physic()
+# physic1 = None
 sched1 = FarmScheduler(physic1,True)
 
 
