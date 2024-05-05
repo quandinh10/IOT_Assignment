@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
     # Test sequence for actuators and sensors
     # while True:
-        # time.sleep(5)
+    #     time.sleep(5)
         # Testing actuator control
         # print("Testing Actuators with ID 2: ")
         # print("Turn on relay_2: ")
@@ -111,5 +111,5 @@ if __name__ == '__main__':
         # print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
         # client.publish("temperature", physic.readSensors("soil_temperature"))
         # time.sleep(5)
-        # # print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+        # print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
         # client.publish("moisture", physic.readSensors("soil_moisture"))

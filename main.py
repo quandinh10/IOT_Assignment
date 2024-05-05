@@ -78,12 +78,12 @@ while True:
     #         physic1.setActuators(2, True)
     #         state = True
         
-    if (timer_flag[3]):
-        setTimer(3, 0)
-        if (PHYSIC):
-            physic1.setActuators(currDevice, False)
-            currDevice = None
-        print("Manual: FINISHED!!!")
+    # if (timer_flag[3]):
+    #     setTimer(3, 0)
+    #     if (PHYSIC):
+    #         physic1.setActuators(currDevice, False)
+    #         currDevice = None
+    #     print("Manual: FINISHED!!!")
     time.sleep(1)
     # print(physic1.serial_read_data())
     pass
