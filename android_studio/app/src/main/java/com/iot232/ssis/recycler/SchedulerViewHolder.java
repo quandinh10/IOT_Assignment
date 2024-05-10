@@ -3,6 +3,7 @@ package com.iot232.ssis.recycler;
 import static android.app.PendingIntent.getActivity;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.text.InputType;
@@ -27,13 +28,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.iot232.ssis.MainActivity;
 import com.iot232.ssis.R;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 public class SchedulerViewHolder extends RecyclerView.ViewHolder {
-    TextView schedulerTitle, startTime, areaType, mixer1Time, mixer2Time, mixer3Time, pump1Time, pump2Time;
-    CardView startCard, areaCard, mixer1Card, mixer2Card, mixer3Card, pump1Card, pump2Card;
+    TextView schedulerTitle, startTime, areaType, mixer1Time, mixer2Time, mixer3Time, pump1Time, pump2Time, cycleCount;
+    CardView startCard, areaCard, mixer1Card, mixer2Card, mixer3Card, pump1Card, pump2Card, cycleCard;
     ToggleButton schedulerButton;
     ImageView schedulerOption;
     Context context;
     SchedulerAdapter schedulerAdapter;
+
+    public final int NAN = 0, MIXER1 = 1, MIXER2 = 2, MIXER3 = 3, PUMP1 = 10,
+            PUMP2 = 11, AREA = 20, NO_TIMER = 30, NO_ACTION = 31, CYCLE = 50, START = 51, TITLE = 52;
+    public final int SCHEDULER_FILTER = 40, AREA_FILTER = 41;
     MainActivity mainActivity;
     public SchedulerViewHolder(@NonNull View itemView, Context context, SchedulerAdapter schedulerAdapter, SchedulerViewInterface schedulerViewInterface) {
         super(itemView);
@@ -47,6 +55,7 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
         schedulerTitle = itemView.findViewById(R.id.schedulerTitle);
         //////
         areaType = itemView.findViewById(R.id.areaType);
+        cycleCount = itemView.findViewById(R.id.cycleCount);
         startTime = itemView.findViewById(R.id.startTime);
         mixer1Time = itemView.findViewById(R.id.mixer1Time);
         mixer2Time = itemView.findViewById(R.id.mixer2Time);
@@ -61,6 +70,7 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
         mixer3Card = itemView.findViewById(R.id.mixer3Card);
         pump1Card = itemView.findViewById(R.id.pump1Card);
         pump2Card = itemView.findViewById(R.id.pump2Card);
+        cycleCard = itemView.findViewById(R.id.cycleCard);
 
 
         ////ACTIVE BUTTON/////
@@ -69,8 +79,23 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 if (schedulerViewInterface != null){
                     int pos = getAdapterPosition();
-                    if (pos != RecyclerView.NO_POSITION){
-                        schedulerViewInterface.onItemClick(pos);
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if (mainActivity.schedulerInfo.get(pos).getSchedulerState() == 1) {
+                            schedulerButton.setChecked(true);
+                            schedulerViewInterface.onItemClick(pos);
+                        }
+                        else {
+                            boolean isTimerSet = schedulerViewInterface.checkSchedules(pos);
+                            boolean isScheduleActive = schedulerViewInterface.checkTimer(pos);
+                            if (!isTimerSet || !isScheduleActive){
+                                showPopup(!isScheduleActive ? NO_TIMER : NO_ACTION, "Invalid action", schedulerViewInterface);
+                                schedulerButton.setChecked(false);
+                            }
+                            else {
+                                schedulerButton.setChecked(false);
+                                schedulerViewInterface.onItemClick(pos);
+                            }
+                        }
                     }
                 }
             }
@@ -81,55 +106,68 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
         schedulerOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFilterMenu(schedulerOption, schedulerViewInterface, 0);
+                showFilterMenu(schedulerOption, schedulerViewInterface, SCHEDULER_FILTER);
             }
         });
+
+        schedulerTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup(TITLE, "Title", schedulerViewInterface);
+            }
+        });
+
+        startCard.setOnClickListener((v -> showTimePickerDialog(schedulerViewInterface)));
 
 
         ////TIMERS/////
         mixer1Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(R.id.mixer1Card, "Mixer 1", schedulerViewInterface);
+                showPopup(MIXER1, "Mixer 1", schedulerViewInterface);
             }
         });
         mixer2Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(R.id.mixer2Card, "Mixer 2", schedulerViewInterface);
+                showPopup(MIXER2, "Mixer 2", schedulerViewInterface);
             }
         });
         mixer3Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(R.id.mixer3Card, "Mixer 3", schedulerViewInterface);
+                showPopup(MIXER3, "Mixer 3", schedulerViewInterface);
             }
         });
         pump1Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(R.id.pump1Card, "Pump 1", schedulerViewInterface);
+                showPopup(PUMP1, "Pump 1", schedulerViewInterface);
             }
         });
         pump2Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(R.id.pump2Card, "Pump 2", schedulerViewInterface);
+                showPopup(PUMP2, "Pump 2", schedulerViewInterface);
             }
         });
-
-
         areaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFilterMenu(areaCard, schedulerViewInterface, 1);
+                showFilterMenu(areaCard, schedulerViewInterface, AREA_FILTER);
+            }
+        });
+        cycleCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup(CYCLE, "Cycle", schedulerViewInterface);
             }
         });
 
     }
 
 
-    public void changeDuration(int id, String title, SchedulerViewInterface schedulerViewInterface) {
+    public void showPopup(int id, String title, SchedulerViewInterface schedulerViewInterface) {
         ConstraintLayout constraintLayout = itemView.findViewById(R.id.popupDialog);
         View view = LayoutInflater.from(context).inflate(R.layout.popup_layout, constraintLayout);
 
@@ -141,36 +179,103 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
         notiText.setText(title);
 
         TextView popupText = view.findViewById(R.id.popup_desc);
-        popupText.setText("Enter a duration in seconds");
-
         EditText insertText = view.findViewById(R.id.popup_insert);
-        insertText.setHint("Duration");
-        insertText.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-        //////CANCEL/////
         Button popupButton1 = view.findViewById(R.id.popup_button1);
-        popupButton1.setText("Cancel");
-        popupButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        //////////////////
-
-        /////CHANGE////
         Button popupButton2 = view.findViewById(R.id.popup_button2);
-        popupButton2.setText("Change");
-        popupButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(insertText.getText().toString()) && TextUtils.isDigitsOnly(insertText.getText().toString())) {
-                    saveChange(id, insertText.getText().toString(), schedulerViewInterface);
-                    alertDialog.dismiss();
-                } else insertText.setError("Please enter an integer");
 
-            }
-        });
+        if (id == CYCLE){
+            popupText.setText("Enter number of cycles");
+            insertText.setHint("Cycle count");
+            insertText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            popupButton1.setText("Cancel");
+            popupButton1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            popupButton2.setText("Change");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(insertText.getText().toString()) && TextUtils.isDigitsOnly(insertText.getText().toString())) {
+                        saveChange(id, insertText.getText().toString(), schedulerViewInterface);
+                        alertDialog.dismiss();
+                    } else insertText.setError("Please enter an integer");
+
+                }
+            });
+        }
+        else if (id == TITLE){
+            popupText.setText("Enter scheduler title");
+            insertText.setHint("Title");
+            popupButton1.setText("Cancel");
+            popupButton1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            popupButton2.setText("Change");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(insertText.getText().toString())) {
+                        saveChange(id, insertText.getText().toString(), schedulerViewInterface);
+                        alertDialog.dismiss();
+                    } else insertText.setError("Please enter a title");
+
+                }
+            });
+        }
+        else if (id == NO_TIMER){
+            popupText.setText("Please set parameters before activating schedule");
+            insertText.setVisibility(View.GONE);
+            popupButton1.setVisibility(View.GONE);
+            popupButton2.setText("Cancel");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+        }
+        else if (id == NO_ACTION){
+            popupText.setText("Another schedule is already active.");
+            insertText.setVisibility(View.GONE);
+            popupButton1.setVisibility(View.GONE);
+            popupButton2.setText("Cancel");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+        }
+        else {
+            popupText.setText("Enter a duration in seconds");
+            insertText.setHint("Duration");
+            insertText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            popupButton1.setText("Cancel");
+            popupButton1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            popupButton2.setText("Change");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!TextUtils.isEmpty(insertText.getText().toString()) && TextUtils.isDigitsOnly(insertText.getText().toString())) {
+                        saveChange(id, insertText.getText().toString(), schedulerViewInterface);
+                        alertDialog.dismiss();
+                    } else insertText.setError("Please enter an integer");
+
+                }
+            });
+        }
+
         ///////////////
 
         if (alertDialog.getWindow() != null) {
@@ -182,39 +287,23 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
 
     ////SAVE CHANGE////
     private void saveChange(int id, String str, SchedulerViewInterface schedulerViewInterface) {
-        int type = -1;
-        int duration = Integer.parseInt(str);
-        if (id == R.id.mixer1Card) type = 0;
-        else if (id == R.id.mixer2Card) type = 1;
-        else if (id == R.id.mixer3Card) type = 2;
-        else if (id == R.id.pump1Card) type = 3;
-        else if (id == R.id.pump2Card) type = 4;
-        else if (id == R.id.areaCard) type = 5;
+        int duration = (id == TITLE)? 0 : Integer.parseInt(str);
+        long longDuration = (id == START)? Long.parseLong(str) : 0;
         if (schedulerViewInterface != null){
             int pos = getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION){
-                schedulerViewInterface.onInfoChanged(pos, type, duration);
+                if (id == START) schedulerViewInterface.onInfoChanged(pos, id, 0, longDuration, "");
+                else if (id == TITLE) schedulerViewInterface.onInfoChanged(pos, id, 0, 0, str);
+                else schedulerViewInterface.onInfoChanged(pos, id , duration, 0 ,"");
             }
         }
-
-//        setTimer();
-
     }
-
-    ////SET TIMER/////
-//    private void setTimer(int id) {
-//        mixer1Time.setText(schedulerAdapter.mainActivity.formatTime(Integer.parseInt(str););
-//        mixer2Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).mixer2Time));
-//        mixer3Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).mixer3Time));
-//        pump1Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).pump1Time));
-//        pump2Time.setText(schedulerAdapter.mainActivity.formatTime(mainActivity.schedulerInfos.get(id).pump2Time));
-//    }
 
 
     /////SHOW FILTER OPTIONS WHEN PRESSING THE 3 DOTS//////
     public void showFilterMenu(View anchorView, SchedulerViewInterface schedulerViewInterface, int type) {
-        int id = (type == 0)? R.id.scheduler_filter : R.id.area_filter;
-        int layout = (type == 0)? R.layout.scheduler_filter_layout : R.layout.area_filter_layout;
+        int id = (type == SCHEDULER_FILTER)? R.id.scheduler_filter : R.id.area_filter;
+        int layout = (type == SCHEDULER_FILTER)? R.layout.scheduler_filter_layout : R.layout.area_filter_layout;
         ConstraintLayout constraintLayout = itemView.findViewById(id);
         View view = LayoutInflater.from(mainActivity).inflate(layout, constraintLayout);
 
@@ -231,7 +320,7 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
         });
 
         //////ALL/////
-        if (type == 0) {
+        if (type == SCHEDULER_FILTER) {
             TextView filterClose = view.findViewById(R.id.filter_close);
             filterClose.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -246,17 +335,12 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
                 }
             });
         }
-        else if (type == 1){
+        else if (type == AREA_FILTER){
             TextView filterA = view.findViewById(R.id.filter_a);
             filterA.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (schedulerViewInterface != null) {
-                        int pos = getAdapterPosition();
-                        if (pos != RecyclerView.NO_POSITION) {
-                            schedulerViewInterface.onInfoChanged(pos, 5, 1);
-                        }
-                    }
+                    saveChange(AREA, String.valueOf(1), schedulerViewInterface);
                     alertDialog.dismiss();
                 }
             });
@@ -264,12 +348,7 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
             filterB.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (schedulerViewInterface != null) {
-                        int pos = getAdapterPosition();
-                        if (pos != RecyclerView.NO_POSITION) {
-                            schedulerViewInterface.onInfoChanged(pos, 5, 2);
-                        }
-                    }
+                    saveChange(AREA, String.valueOf(2), schedulerViewInterface);
                     alertDialog.dismiss();
                 }
             });
@@ -277,12 +356,7 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
             filterC.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (schedulerViewInterface != null) {
-                        int pos = getAdapterPosition();
-                        if (pos != RecyclerView.NO_POSITION) {
-                            schedulerViewInterface.onInfoChanged(pos, 5, 3);
-                        }
-                    }
+                    saveChange(AREA, String.valueOf(3), schedulerViewInterface);
                     alertDialog.dismiss();
                 }
             });
@@ -304,10 +378,62 @@ public class SchedulerViewHolder extends RecyclerView.ViewHolder {
 
         // Set the gravity to be below the anchor view
         WindowManager.LayoutParams params = alertDialog.getWindow().getAttributes();
-        params.gravity = Gravity.TOP | Gravity.END; // Adjust as per your requirement
+        params.gravity = Gravity.TOP | Gravity.END;
         params.x = anchorX + anchorWidth; // Adjust the x position
         params.y = anchorY + anchorHeight - 80; // Adjust the y position
 
         alertDialog.show();
     }
+
+
+    private void showTimePickerDialog(SchedulerViewInterface schedulerViewInterface) {
+        final Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                context,
+                (view, selectedHour, selectedMinute) -> {
+                    String selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute);
+                    long epochTime = convertToEpoch(selectedHour, selectedMinute);
+                    saveChange(START, String.valueOf(epochTime), schedulerViewInterface);
+                    startTime.setText(selectedTime);
+                },
+                hour,
+                minute,
+                true
+        );
+
+        timePickerDialog.show();
+    }
+
+    private long convertToEpoch(int hourOfDay, int minute) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        int offset = TimeZone.getDefault().getOffset(calendar.getTimeInMillis());
+        return (calendar.getTimeInMillis() + offset) / 1000;
+    }
+
+    public TextView getMixer1Time() {
+        return mixer1Time;
+    }
+
+    public TextView getMixer2Time() {
+        return mixer2Time;
+    }
+
+    public TextView getMixer3Time() {
+        return mixer3Time;
+    }
+
+    public TextView getPump1Time() {
+        return pump1Time;
+    }
+
+    public TextView getPump2Time() {
+        return pump2Time;
+    }
+
 }
