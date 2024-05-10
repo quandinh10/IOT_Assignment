@@ -164,6 +164,7 @@ public class DashboardFragment extends Fragment {
                 }
                 else {
                     mainActivity.timerInfo.setAreaType(AREA1);
+                    mainActivity.sendSchedule(NAN, AREA1, "selector", NAN);
                     buttonPressed(AREA1, true);
                     buttonPressed(AREA2, false);
                     buttonPressed(AREA3, false);
@@ -179,6 +180,7 @@ public class DashboardFragment extends Fragment {
                 }
                 else {
                     mainActivity.timerInfo.setAreaType(AREA2);
+                    mainActivity.sendSchedule(NAN, AREA2, "selector", NAN);
                     buttonPressed(AREA2, true);
                     buttonPressed(AREA1, false);
                     buttonPressed(AREA3, false);
@@ -195,6 +197,7 @@ public class DashboardFragment extends Fragment {
                 }
                 else {
                     mainActivity.timerInfo.setAreaType(AREA3);
+                    mainActivity.sendSchedule(NAN, AREA3, "selector", NAN);
                     buttonPressed(AREA3, true);
                     buttonPressed(AREA2, false);
                     buttonPressed(AREA1, false);
@@ -350,12 +353,12 @@ public class DashboardFragment extends Fragment {
         else if (type == MIXER2) mixer2Button.setChecked(status);
         else if (type == MIXER3) mixer3Button.setChecked(status);
         else if (type == PUMP1) pump1Button.setChecked(status);
-        else if (type == PUMP2) pump1Button.setChecked(status);
+        else if (type == PUMP2) pump2Button.setChecked(status);
         else if (type == AREA1) area1Button.setChecked(status);
         else if (type == AREA2) area2Button.setChecked(status);
         else if (type == AREA3) area3Button.setChecked(status);
         if (AREA1 <= type && type <= AREA3) return;
-        if (status) mainActivity.startTimer(type, 0);
+        if (status) mainActivity.startTimer(type, 0, mainActivity.timerInfo);
         else{
             setTimer(type);
             mainActivity.stopTimer(type);
