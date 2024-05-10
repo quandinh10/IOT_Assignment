@@ -4,15 +4,20 @@ import static com.iot232.ssis.databinding.ActivityMainBinding.inflate;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
@@ -53,6 +58,8 @@ import com.iot232.ssis.helper.MqttHelper;
 import com.iot232.ssis.fragments.DashboardFragment;
 import com.iot232.ssis.fragments.HomeFragment;
 import com.iot232.ssis.fragments.AutomationsFragment;
+import com.iot232.ssis.recycler.SchedulerAdapter;
+import com.iot232.ssis.recycler.SchedulerViewHolder;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -247,6 +254,10 @@ public class MainActivity extends AppCompatActivity {
             navView.setCheckedItem(R.id.nav_home);
         }
 
+        // Register the BroadcastReceiver to listen for connectivity changes
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(connectivityReceiver, filter);
+
         ///////////END OF ONCREATE///////////
     }
 
@@ -294,9 +305,9 @@ public class MainActivity extends AppCompatActivity {
         int mixerDelta = (int) (currentTime - timerInfo.getMixerStart());
         int pumpDelta = (int) (currentTime - timerInfo.getPumpStart());
         if (timerInfo.getMixerState() >= MIXER1 && timerInfo.getMixerState() <= MIXER3)
-            startTimer(mixerState, mixerDelta);
+            startTimer(mixerState, mixerDelta, timerInfo);
         if (timerInfo.getPumpState() >= PUMP1 && timerInfo.getPumpState() <= PUMP2)
-            startTimer(pumpState, pumpDelta);
+            startTimer(pumpState, pumpDelta, timerInfo);
     }
 
     private void openFragment(Fragment fragment) {
@@ -360,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void connectionLost(Throwable cause) {
-                    failedMQTTPopup();
+                    startMQTT();
                 }
 
                 @Override
@@ -421,11 +432,29 @@ public class MainActivity extends AppCompatActivity {
         });
         ///////////////
 
-        if (alertDialog.getWindow() != null) {
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        alertDialog.getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                alertDialog.dismiss();
+                startMQTT();
+                return true;
+            }
+        });
         alertDialog.show();
     }
+
+    private BroadcastReceiver connectivityReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            if (activeNetwork == null || !activeNetwork.isConnected()) {
+                // WiFi is disconnected
+                startMQTT();
+            }
+        }
+    };
 
 
     ////CHECK FRAGMENT FOR FAB////
@@ -460,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = arrayLength - 1; i >= 0; i--) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String valueString = jsonObject.getString("value");
-                        float value = Float.parseFloat(valueString);
+                        float value = Float.parseFloat(valueString)/100;
                         tempEntries.add(new Entry(arrayLength - i - 1, value)); // Subtracting i from arrayLength gives the reversed index
                     }
                 }
@@ -517,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /////TIMERS////////
-    public void startTimer(int type, int delta) {
+    public void startTimer(int type, int delta, TimerInfo timerInfo) {
         int duration = 0;
         Map<Integer, Integer> map = new HashMap<>();
         map.put(MIXER1, timerInfo.getMixer1Time());
@@ -566,6 +595,19 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(timerRunnable, 1000);
     }
 
+    //TODO///
+    public void startSchedule(int pos, int delta, SchedulerAdapter schedulerAdapter){
+        int totalDuration = schedulerInfo.get(pos).getMixer1Time() +
+                schedulerInfo.get(pos).getMixer2Time() + schedulerInfo.get(pos).getMixer3Time()
+                + schedulerInfo.get(pos).getPump1Time()+ schedulerInfo.get(pos).getPump2Time();
+        int[] states = {MIXER1, MIXER2,  MIXER3, PUMP1, PUMP2};
+        int curr = 0;
+//        startTimer(states[curr], 0, schedulerInfo.get(pos));
+
+
+
+    }
+
     public void stopTimer(int type){
         handler.removeCallbacks(timerRunnable);
         if (type >= MIXER1 && type <= MIXER3) {
@@ -610,7 +652,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendSchedule(int type, int duration, String str, int base){
-        String payload = "{\"" + str + (type - base + 1) + "\":" + duration + "}";
+        Map<Integer, String> areaMap = new HashMap<>();
+        areaMap.put(AREA1, "A");
+        areaMap.put(AREA2, "B");
+        areaMap.put(AREA3, "C");
+        String payload = (!Objects.equals(str, "selector"))? "{\"" + str + (type - base + 1) + "\":" + duration + "}" : "{\"" + str + "\":" + areaMap.get(duration) + "}";
         client.sendDataMQTT("project_IOT_hcmut/feeds/data", payload);
     }
 
