@@ -1,6 +1,15 @@
 import sys
 import time
 import serial.tools.list_ports
+from adafruit_mqtt import *
+MIXER1 = 2
+MIXER2 = 3
+MIXER3 = 4
+PUMPIN = 5
+PUMPOUT = 6
+AREA1 = 7
+AREA2 = 8
+AREA3 = 9
 
 class Physic:
     def __init__(self):        
@@ -53,7 +62,7 @@ class Physic:
         if bytesToRead > 0:
             out = self.ser.read(bytesToRead)
             data_array = [b for b in out]  # Converts the bytes to a list for easier processing
-            print(data_array)
+            # print(data_array)
             if len(data_array) >= 7:
                 array_size = len(data_array)
                 value = data_array[array_size - 4] * 256 + data_array[array_size - 3]
@@ -66,7 +75,6 @@ class Physic:
         """Sends a command to set the state of an actuator (relay) based on its ID."""
         command_key = f'relay{ID}_{"ON" if state else "OFF"}'
         command_data = self.RS485_actuartors_format.get(command_key)
-        print("command data: ",command_data)
         self.ser.write(command_data)  # Sends the command data to the actuator
         # print(self.serial_read_data())
 
@@ -82,23 +90,26 @@ class Physic:
         
         
 
-if __name__ == '__main__':
-    physic = Physic(True)  # Initialize the class with debug mode enabled
+# if __name__ == '__main__':
+#     physic = Physic()  # Initialize the class with debug mode enabled
+#     client = Adafruit_MQTT()  # Initialize the Adafruit_MQTT class
 
-    # Test sequence for actuators and sensors
-    while True:
-        # Testing actuator control
-        print("Testing Actuators with ID 2: ")
-        print("Turn on relay_2: ")
-        physic.setActuators(2, True)  # Turn on relay 2
-        time.sleep(2)
-        print("Turn off relay_2: ")
-        physic.setActuators(2, False)  # Turn off relay 2
-        time.sleep(2)
+#     # Test sequence for actuators and sensors
+#     # while True:
+#     #     time.sleep(5)
+#         # Testing actuator control
+#         # print("Testing Actuators with ID 2: ")
+#         # print("Turn on relay_2: ")
+#         # physic.setActuators(2, True)  # Turn on relay 2
+#         # time.sleep(2)
+#         # print("Turn off relay_2: ")
+#         # physic.setActuators(2, False)  # Turn off relay 2
+#         # time.sleep(2)
 
-        # Testing sensor reading
-        # print("\nTesting reading sensor: ")
-        # print("Soil temperature: ", physic.readSensors(TEMP))  # Read and print soil temperature
-        # time.sleep(1)
-        # print("Soil moisture: ", physic.readSensors(MOISTURE))  # Read and print soil moisture
-        # time.sleep(5)
+#         # Testing sensor reading
+#         # print("\nTesting reading sensor: ")
+#         # print("Soil temperature: ", physic.readSensors("soil_temperature"))  # Read and print soil temperature
+#         # client.publish("temperature", physic.readSensors("soil_temperature"))
+#         # time.sleep(5)
+#         # print("Soil moisture: ", physic.readSensors("soil_moisture"))  # Read and print soil moisture
+#         # client.publish("moisture", physic.readSensors("soil_moisture"))
