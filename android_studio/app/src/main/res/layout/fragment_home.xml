@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.HomeFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="?android:attr/windowBackground"
+        android:layout_height="match_parent">
+
+        <!--Show day-->
+        <LinearLayout
+            android:id="@+id/layout_today"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <!--DotW-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/current_day"
+                android:textSize="30sp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Monday"
+                android:textStyle="bold"
+                android:textColor="@color/Gold"/>
+
+            <!--Date-->
+            <TextView
+                android:id="@+id/current_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="20 Apr"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/Dark_Goldenrod"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/layout_today">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:ignore="MissingConstraints">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/tempCard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginRight="30dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="5dp">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/graphText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:text="Graph"
+                                    android:textColor="@color/Gold"
+                                    android:textSize="24sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/graph_hamburger"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/dots_horizontal"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginTop="5dp"/>
+
+
+                                <com.github.mikephil.charting.charts.LineChart
+                                    android:id="@+id/graph"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="300dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:layoutDirection="ltr"
+                                    android:layout_marginTop="40dp"
+                                    app:chart_grid="vertical"
+                                    app:chart_labelsSize="8sp" />
+
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <!--Blank Card-->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/blankCard"
+                            android:layout_width="match_parent"
+                            android:layout_height="70dp"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_below="@id/tempCard"
+                            android:backgroundTint="@android:color/transparent"
+                            android:layout_alignParentBottom="true"
+                            app:cardElevation="0dp" />
+
+
+
+
+
+                    </RelativeLayout>
+            </ScrollView>
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,75 @@
+<!-- filter_menu_layout.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/graph_filter"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/graph_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_alignParentEnd="true"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/filter_all"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="All"
+                android:padding="5dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/Gold"
+                android:clickable="true"/>
+
+            <TextView
+                android:id="@+id/filter_temperature"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:padding="5dp"
+                android:layout_below="@id/filter_all"
+                android:textStyle="bold"
+                android:textColor="@color/Gold"
+                android:text="Temperature"
+                android:textSize="12sp"
+                android:clickable="true" />
+
+            <TextView
+                android:id="@+id/filter_humidity"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/Gold"
+                android:textStyle="bold"
+                android:padding="5dp"
+                android:layout_below="@id/filter_temperature"
+                android:text="Humidity"
+                android:textSize="12sp"
+                android:clickable="true"/>
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/blankCard"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/graph_card"
+        app:cardElevation="0dp"
+        android:backgroundTint="@android:color/transparent"/>
+    <!-- Add more filter options if needed -->
+
+</RelativeLayout>
