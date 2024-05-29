@@ -2,6 +2,7 @@ import sys
 import time
 import serial.tools.list_ports
 from adafruit_mqtt import *
+
 MIXER1 = 2
 MIXER2 = 3
 MIXER3 = 4
@@ -37,13 +38,13 @@ class Physic:
                 "soil_moisture" : [1, 3, 0, 7, 0, 1, 53, 203]
             }
 
-        self.portname = self.getPort()  
-        try:
-            self.ser = serial.Serial(port=self.portname, baudrate=9600)
-            print("Open successfully port: ", self.portname)
-        except:
-            print("Exception: Can not open the port")
-            sys.exit() 
+        # self.portname = self.getPort()  
+        # try:
+        #     self.ser = serial.Serial(port=self.portname, baudrate=9600)
+        #     print("Open successfully port: ", self.portname)
+        # except:
+        #     print("Exception: Can not open the port")
+        #     sys.exit() 
 
     def getPort(self):
         """Searches for and returns the first available USB serial port."""
@@ -55,6 +56,14 @@ class Physic:
             if "USB" in strPort:  # Checks if the port description contains 'USB'
                 splitPort = strPort.split(" ")
                 commPort = splitPort[0]  # Assumes the first part is the port name
+        
+        self.portname = commPort
+        try:
+            self.ser = serial.Serial(port=self.portname, baudrate=9600)
+            print("Open successfully port: ", self.portname)
+        except:
+            print("Exception: Can not open the port")
+            sys.exit() 
         return commPort
 
     def serial_read_data(self):

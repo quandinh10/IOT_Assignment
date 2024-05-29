@@ -13,12 +13,13 @@ class FarmScheduler():
         self.currState = "IDLE"
         self.physicController = physicController
         self.debug = debug
+        self.stop = False
         
     def run(self):        
         if (not self.currSched):
             result = self.checkSched()
             if (result != -1):
-                self.currSched = self.sched[result]
+                self.currSched = self.sched[result].copy()
             else: 
                 return
         
@@ -26,7 +27,8 @@ class FarmScheduler():
             print(timer_counter[0])
             
         if (self.currState == "IDLE"):
-            if (self.currSched['cycle'] > 0):
+            if (int(self.currSched['cycle']) > 0):
+                self.stop = False
                 if (self.debug):
                     print("NEW CYLCLE!")
                 setTimer(0, int(self.currSched['mixer1']))
@@ -36,8 +38,13 @@ class FarmScheduler():
                 if PHYSIC:
                     self.physicController.setActuators(MIXER1, True)
             else:
-                print("FINISHED !!!")
-                self.currSched = {}
+                if (not self.stop):
+                    print("FINISHED !!!")
+                    self.stop = True
+                now = datetime.now()
+                current_time = now.strftime("%H:%M")
+                if (self.currSched['startTime'] != current_time):
+                    self.currSched = {}
                 
         elif (self.currState == "MIXER1"):
             if (timer_flag[0]):
@@ -111,7 +118,7 @@ class FarmScheduler():
         return -1
                 
 if __name__ == '__main__':
-    sched1 = FarmScheduler()
+    sched1 = FarmScheduler(None)
     mqtt_json_data_t1 = '{"mixer1": 3, "mixer2": 3, "mixer3": 3, "pump_in": 3, "pump_out": 3, "selector": "A", "cycle": 2, "startTime": "16:43"}'
     mqtt_json_data_t2 = '{"mixer1": 3, "mixer2": 3, "mixer3": 3, "pump_in": 3, "pump_out": 3, "selector": "A", "cycle": 2, "startTime": "15:30"}'
     
@@ -121,6 +128,10 @@ if __name__ == '__main__':
     
     sched1.appendSched(mqtt_json_data_t1)
     sched1.appendSched(mqtt_json_data_t2)
-    print(sched1.sched[1]['cycle'])
+    sched1.currSched = sched1.sched[0]
+    print(sched1.currSched)
+    print(sched1.currSched['cycle'])
+    print(sched1.currSched)
+    print(sched1.sched[0])
     
 
