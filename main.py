@@ -48,7 +48,7 @@ if PHYSIC:
     physic1.getPort()
 sched1 = FarmScheduler(physic1,True)
 
-ENVIRON_MONITOR = False # ENABLE READ SENSORS
+ENVIRON_MONITOR = True # ENABLE READ SENSORS
 
 '''
     timer0: for FarmScheduler
@@ -78,5 +78,5 @@ while True:
         print("Turn off")
         currDevice = None
     time.sleep(1)
-    # print(physic1.serial_read_data())
+    print(physic1.serial_read_data())
     pass
