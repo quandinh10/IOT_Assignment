@@ -48,7 +48,7 @@ if PHYSIC:
     physic1.getPort()
 sched1 = FarmScheduler(physic1,True)
 
-ENVIRON_MONITOR = False # ENABLE READ SENSORS
+ENVIRON_MONITOR = True # ENABLE READ SENSORS
 
 '''
     timer0: for FarmScheduler
