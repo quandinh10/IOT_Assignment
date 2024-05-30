@@ -24,7 +24,7 @@ class FarmScheduler():
                 return
         
         if (self.debug):
-            print(str(timer_counter[0]) + "second left")
+            print(str(timer_counter[0]) + " second left")
             
         if (self.currState == "IDLE"):
             if (int(self.currSched['cycle']) > 0):
