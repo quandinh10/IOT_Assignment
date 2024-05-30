@@ -3,7 +3,7 @@ from timer import *
 from datetime import datetime
 from physic import *
 
-PHYSIC = False
+PHYSIC = True
 
 class FarmScheduler():
     
