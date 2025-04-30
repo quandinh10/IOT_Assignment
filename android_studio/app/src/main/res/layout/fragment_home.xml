@@ -28,7 +28,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Monday"
                 android:textStyle="bold"
-                android:textColor="@color/Gold"/>
+                android:textColor="@color/Forest_Green"/>
 
             <!--Date-->
             <TextView
@@ -39,7 +39,7 @@
                 android:text="20 Apr"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/Dark_Goldenrod"/>
+                android:textColor="@color/Dark_Forrest_Green"/>
         </LinearLayout>
 
         <LinearLayout
@@ -57,12 +57,43 @@
                         android:layout_height="wrap_content"
                         tools:ignore="MissingConstraints">
 
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="30dp"
+                            android:id="@+id/tempTitle">
+
+                            <TextView
+                                android:id="@+id/tempText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/White"
+                                android:text="Temperature"
+                                android:textStyle="bold"
+                                android:textSize="20sp" />
+
+                            <ImageView
+                                android:id="@+id/graph_hamburger"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/dots_horizontal"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="5dp"/>
+
+                        </RelativeLayout>
+
+
                         <androidx.cardview.widget.CardView
                             android:id="@+id/tempCard"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_below="@id/tempTitle"
                             android:layout_marginLeft="30dp"
-                            android:layout_marginTop="15dp"
+                            android:layout_marginTop="5dp"
                             android:layout_marginRight="30dp"
                             app:cardCornerRadius="20dp"
                             app:cardElevation="5dp">
@@ -71,37 +102,74 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
 
-                                <TextView
-                                    android:id="@+id/graphText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:text="Graph"
-                                    android:textColor="@color/Gold"
-                                    android:textSize="24sp"
-                                    android:textStyle="bold" />
-
-                                <ImageView
-                                    android:id="@+id/graph_hamburger"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/dots_horizontal"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_marginEnd="8dp"
-                                    android:layout_marginTop="5dp"/>
-
-
                                 <com.github.mikephil.charting.charts.LineChart
-                                    android:id="@+id/graph"
+                                    android:id="@+id/tempGraph"
                                     android:layout_width="match_parent"
-                                    android:layout_height="300dp"
+                                    android:layout_height="200dp"
+                                    android:layout_marginTop="8dp"
                                     android:layout_marginBottom="8dp"
                                     android:layoutDirection="ltr"
-                                    android:layout_marginTop="40dp"
                                     app:chart_grid="vertical"
                                     app:chart_labelsSize="8sp" />
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_below="@+id/tempCard"
+                            android:id="@+id/humidTitle">
+
+                            <TextView
+                                android:id="@+id/humidText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/White"
+                                android:text="Moisture"
+                                android:textStyle="bold"
+                                android:textSize="20sp" />
+
+                            <ImageView
+                                android:id="@+id/graph_hamburger2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/dots_horizontal"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="5dp"/>
+
+                        </RelativeLayout>
 
 
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/humidCard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/humidTitle"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="30dp"
+                            app:cardCornerRadius="20dp"
+                            app:cardElevation="5dp">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.github.mikephil.charting.charts.LineChart
+                                    android:id="@+id/humidGraph"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="200dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:layoutDirection="ltr"
+                                    android:layout_marginTop="8dp"
+                                    app:chart_grid="vertical"
+                                    app:chart_labelsSize="8sp" />
                             </RelativeLayout>
 
                         </androidx.cardview.widget.CardView>
@@ -114,7 +182,7 @@
                             android:layout_marginStart="15dp"
                             android:layout_marginTop="15dp"
                             android:layout_marginEnd="15dp"
-                            android:layout_below="@id/tempCard"
+                            android:layout_below="@id/humidCard"
                             android:backgroundTint="@android:color/transparent"
                             android:layout_alignParentBottom="true"
                             app:cardElevation="0dp" />

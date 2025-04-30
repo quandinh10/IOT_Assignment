@@ -23,13 +23,12 @@ import com.iot232.ssis.helper.ContentHelper;
 
 public class SettingsActivity extends AppCompatActivity {
     Toolbar toolbar;
-    CardView eraseData;
+    CardView eraseData, resetTimer, resetServer;
     ContentHelper contentHelper;
     AdaInfo adaInfo;
     TimerInfo timerInfo;
     UserInfo userInfo;
-    int erased;
-
+    public int ERASE_DATA = 3, RESET_TIMER = 2, RESET_SERVER = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +38,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         timerInfo = new TimerInfo();
         adaInfo = new AdaInfo();
-        userInfo = new UserInfo("", "", "" , "" , "", "", "1");
-
-        erased = 0;
 
         /////TOOLBAR//////
         toolbar = findViewById(R.id.toolbar);
@@ -55,19 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (erased == 0) onBackPressed();
-                else {
-                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                    intent.putExtra("editAdaInfo", new Gson().toJson(adaInfo));
-                    intent.putExtra("editUserInfo", new Gson().toJson(userInfo));
-                    intent.putExtra("editTimerInfo", new Gson().toJson(timerInfo));
-                    intent.putExtra("editSchedulerInfo", new Gson().toJson(timerInfo));
-                    contentHelper.deleteJSONFile("adaInfo.json", SettingsActivity.this);
-                    contentHelper.deleteJSONFile("userInfo.json", SettingsActivity.this);
-                    contentHelper.deleteJSONFile("timerInfo.json", SettingsActivity.this);
-                    contentHelper.deleteJSONFile("schedulerInfo.json", SettingsActivity.this);
-                    startActivity(intent);
-                }
+                onBackPressed();
             }
         });
 
@@ -75,14 +59,29 @@ public class SettingsActivity extends AppCompatActivity {
         eraseData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                confirmAction();
+                confirmAction(ERASE_DATA);
             }
         });
 
+        resetTimer = findViewById(R.id.resetTimer);
+        resetTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmAction(RESET_TIMER);
+            }
+        });
+
+        resetServer = findViewById(R.id.resetServer);
+        resetServer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmAction(RESET_SERVER);
+            }
+        });
     }
 
 
-    public void confirmAction() {
+    public void confirmAction(int type) {
         ConstraintLayout constraintLayout = findViewById(R.id.popupDialog);
         View view = LayoutInflater.from(this).inflate(R.layout.popup_layout, constraintLayout);
 
@@ -93,11 +92,10 @@ public class SettingsActivity extends AppCompatActivity {
         TextView notiText = view.findViewById(R.id.popup_title);
         notiText.setText("Confirm action");
 
-        TextView popupText = view.findViewById(R.id.popup_desc);
-        popupText.setText("This will erase all data. Existing actions will be deleted.");
-
         EditText insertText = view.findViewById(R.id.popup_insert);
         insertText.setVisibility(View.GONE);
+
+        TextView popupText = view.findViewById(R.id.popup_desc);
 
         //////BUTTON1/////
         Button popupButton1 = view.findViewById(R.id.popup_button1);
@@ -109,24 +107,45 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-        ///////////////
-        //////////////////
 
-        /////BUTTON2////
         Button popupButton2 = view.findViewById(R.id.popup_button2);
-        popupButton2.setText("Erase");
-        popupButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        popupButton2.setText("Reset");
+        /////BUTTON2////
 
-                contentHelper.writeContent(adaInfo, "adaInfo.json",SettingsActivity.this);
-                contentHelper.writeContent(timerInfo, "timerInfo.json",SettingsActivity.this);
-                contentHelper.printContentJson("adaInfo.json", SettingsActivity.this);
-                erased = 1;
-                alertDialog.dismiss();
+        if (type == ERASE_DATA) {
+            popupText.setText("This will erase all data and is not reversible.");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    contentHelper.deleteJSONFile("adaInfo.json", SettingsActivity.this);
+                    contentHelper.deleteJSONFile("timerInfo.json", SettingsActivity.this);
+                    contentHelper.deleteJSONFile("schedulerInfo.json", SettingsActivity.this);
+                    alertDialog.dismiss();
+                }
+            });
+        }
+        else if (type == RESET_TIMER){
+            popupText.setText("This will reset all timers and is not reversible.");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    contentHelper.deleteJSONFile("timerInfo.json", SettingsActivity.this);
+                    contentHelper.deleteJSONFile("schedulerInfo.json", SettingsActivity.this);
+                    alertDialog.dismiss();
+                }
+            });
+        }
+        else if (type == RESET_SERVER){
+            popupText.setText("This will reset server option is not reversible.");
+            popupButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    contentHelper.deleteJSONFile("adaInfo.json", SettingsActivity.this);
+                    alertDialog.dismiss();
+                }
+            });
+        }
 
-            }
-        });
         ///////////////
 
         if (alertDialog.getWindow() != null) {

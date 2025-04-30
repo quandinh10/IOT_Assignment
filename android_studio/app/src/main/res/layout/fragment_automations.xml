@@ -18,7 +18,7 @@
         android:textAlignment="center"
         android:id="@+id/noScheduleText"
         android:text="There are no schedules available."
-        android:textColor="@color/Gold"
+        android:textColor="@color/Forest_Green"
         android:textSize="18sp"
         android:layout_centerVertical="true" />
 

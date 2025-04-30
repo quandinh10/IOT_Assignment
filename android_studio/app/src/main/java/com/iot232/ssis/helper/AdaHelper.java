@@ -1,15 +1,19 @@
 package com.iot232.ssis.helper;
 
-import android.os.AsyncTask;
-import java.io.IOException;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import androidx.annotation.NonNull;
 
-public class AdaHelper extends AsyncTask<Void, Void, String> {
-    public String feedKey;
-    public OnTaskCompleted listener;
-    public String username, password;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class AdaHelper {
+    private String feedKey;
+    private OnTaskCompleted listener;
+    private String username, password;
 
     public AdaHelper(String feedKey, OnTaskCompleted listener, String username, String password) {
         this.feedKey = feedKey;
@@ -18,38 +22,34 @@ public class AdaHelper extends AsyncTask<Void, Void, String> {
         this.password = password;
     }
 
-    @Override
-    protected String doInBackground(Void... voids) {
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("https://io.adafruit.com/api/v2/" + username + "/feeds/" + feedKey + "/data") // Use dynamic feed key
-                .header("X-AIO-Key", password)
+    public void fetchData() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://io.adafruit.com/")
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return response.body().string();
-            } else {
-                // Handle unsuccessful response
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle network error
-            return null;
-        }
-    }
+        AdafruitApi apiService = retrofit.create(AdafruitApi.class);
+        Call<List<DataEntry>> call = apiService.getDataEntry(username, feedKey, password);
 
-    @Override
-    protected void onPostExecute(String result) {
-        if (result != null) listener.onTaskCompleted(result);
-        else listener.onTaskFailed();
+        call.enqueue(new Callback<List<DataEntry>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<DataEntry>> call, @NonNull Response<List<DataEntry>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onTaskCompleted(response.body());
+                } else {
+                    listener.onTaskFailed();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<DataEntry>> call, @NonNull Throwable t) {
+                listener.onTaskFailed();
+            }
+        });
     }
 
     public interface OnTaskCompleted {
-        void onTaskCompleted(String result);
+        void onTaskCompleted(List<DataEntry> dataEntries);
         void onTaskFailed();
     }
 }

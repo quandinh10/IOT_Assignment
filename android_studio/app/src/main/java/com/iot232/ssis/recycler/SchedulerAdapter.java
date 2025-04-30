@@ -54,6 +54,7 @@ public class SchedulerAdapter extends RecyclerView.Adapter<SchedulerViewHolder> 
         holder.pump1Time.setText(formatTime(schedulerItems.get(position).getPump1Time()));
         holder.pump2Time.setText(formatTime(schedulerItems.get(position).getPump2Time()));
         holder.schedulerTitle.setText(schedulerItems.get(position).getSchedulerTitle());
+        holder.schedulerButton.setChecked(schedulerItems.get(position).getSchedulerState() == 1);
         holder.startTime.setText(formatTime(schedulerItems.get(position).getMixerStart()));
         this.position = holder.getAdapterPosition();
     }

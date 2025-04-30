@@ -22,7 +22,6 @@ import com.iot232.ssis.R;
 import com.iot232.ssis.data.TimerInfo;
 import com.iot232.ssis.databinding.FragmentAutomationsBinding;
 import com.iot232.ssis.recycler.SchedulerAdapter;
-import com.iot232.ssis.recycler.SchedulerViewHolder;
 import com.iot232.ssis.recycler.SchedulerViewInterface;
 
 import java.util.ArrayList;
@@ -33,12 +32,19 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
     TextView noScheduleText;
     MainActivity mainActivity;
     RecyclerView schedulerView;
+
+    public SchedulerAdapter getSchedulerAdapter() {
+        return schedulerAdapter;
+    }
+
     SchedulerAdapter schedulerAdapter;
+
+    public List<TimerInfo> getSchedules() {
+        return schedules;
+    }
+
     List<TimerInfo> schedules;
     public int savedpos = -1;
-
-    public final int NAN = 0, MIXER1 = 1, MIXER2 = 2, MIXER3 = 3, PUMP1 = 10,
-            PUMP2 = 11, AREA = 20, NO_TIMER = 30, NO_ACTION = 31, CYCLE = 50, START = 51, TITLE = 52;
 
     private FragmentAutomationsBinding binding;
 
@@ -69,7 +75,7 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
         int id = (savedpos != -1)? savedpos : mainActivity.schedulerInfo.size();
         savedpos = -1;
         String schedulerName = "Untitled";
-        TimerInfo newSchedule = new TimerInfo(schedulerName, id, NAN, 0, NAN, NAN, 0, 0, 0, 0, NAN, 0, 0, 0);
+        TimerInfo newSchedule = new TimerInfo(schedulerName, id, mainActivity.NAN, 0, mainActivity.NAN, mainActivity.NAN, 0, 0, 0, 0, mainActivity.NAN, 0, 0, 0);
         schedules.add(newSchedule);
         mainActivity.schedulerInfo.add(newSchedule);
         mainActivity.contentHelper.writeContent(mainActivity.schedulerInfo, "schedulerInfo.json", (MainActivity) mainActivity);
@@ -100,8 +106,9 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
         mainActivity.schedulerInfo.get(pos).setSchedulerState(inv);
         if (inv == 1){
             mainActivity.sendSchedule(pos);
-//            mainActivity.startSchedule(pos, 0, schedulerAdapter);
+            mainActivity.startSchedule(pos, 0, schedulerAdapter);
         }
+        else mainActivity.stopSchedule(pos, mainActivity.schedulerInfo.get(pos), schedulerAdapter);
         schedulerAdapter.notifyItemChanged(pos);
         saveSchedules();
     }
@@ -117,46 +124,43 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
 
     @Override
     public void onInfoChanged(int pos, int type, int duration, long longDuration, String str) {
-        switch (type){
-            case MIXER1:
-                schedules.get(pos).setMixer1Time(duration);
-                mainActivity.schedulerInfo.get(pos).setMixer1Time(duration);
-                break;
-            case MIXER2:
-                schedules.get(pos).setMixer2Time(duration);
-                mainActivity.schedulerInfo.get(pos).setMixer2Time(duration);
-                break;
-            case MIXER3:
-                schedules.get(pos).setMixer3Time(duration);
-                mainActivity.schedulerInfo.get(pos).setMixer3Time(duration);
-                break;
-            case PUMP1:
-                schedules.get(pos).setPump1Time(duration);
-                mainActivity.schedulerInfo.get(pos).setPump1Time(duration);
-                break;
-            case PUMP2:
-                schedules.get(pos).setPump2Time(duration);
-                mainActivity.schedulerInfo.get(pos).setPump2Time(duration);
-                break;
-            case AREA:
-                schedules.get(pos).setAreaType(duration);
-                mainActivity.schedulerInfo.get(pos).setAreaType(duration);
-                break;
-            case CYCLE:
-                schedules.get(pos).setCycleCount(duration);
-                mainActivity.schedulerInfo.get(pos).setCycleCount(duration);
-                break;
-            case START:
-                schedules.get(pos).setMixerStart(longDuration);
-                mainActivity.schedulerInfo.get(pos).setMixerStart(longDuration);
-                break;
-            case TITLE:
-                schedules.get(pos).setSchedulerTitle(str);
-                mainActivity.schedulerInfo.get(pos).setSchedulerTitle(str);
-                break;
-            default:
-                break;
+        if (type == mainActivity.MIXER1) {
+            schedules.get(pos).setMixer1Time(duration);
+            mainActivity.schedulerInfo.get(pos).setMixer1Time(duration);
         }
+        else if (type == mainActivity.MIXER2) {
+            schedules.get(pos).setMixer2Time(duration);
+            mainActivity.schedulerInfo.get(pos).setMixer2Time(duration);
+        }
+        else if (type == mainActivity.MIXER3) {
+            schedules.get(pos).setMixer3Time(duration);
+            mainActivity.schedulerInfo.get(pos).setMixer3Time(duration);
+        }
+        else if (type == mainActivity.PUMP1) {
+            schedules.get(pos).setPump1Time(duration);
+            mainActivity.schedulerInfo.get(pos).setPump1Time(duration);
+        }
+        else if (type == mainActivity.PUMP2) {
+            schedules.get(pos).setPump2Time(duration);
+            mainActivity.schedulerInfo.get(pos).setPump2Time(duration);
+        }
+        else if (type == mainActivity.AREA) {
+            schedules.get(pos).setAreaType(duration);
+            mainActivity.schedulerInfo.get(pos).setAreaType(duration);
+        }
+        else if (type == mainActivity.CYCLE) {
+            schedules.get(pos).setCycleCount(duration);
+            mainActivity.schedulerInfo.get(pos).setCycleCount(duration);
+        }
+        else if (type == mainActivity.START) {
+            schedules.get(pos).setMixerStart(longDuration);
+            mainActivity.schedulerInfo.get(pos).setMixerStart(longDuration);
+        }
+        else if (type == mainActivity.TITLE) {
+            schedules.get(pos).setSchedulerTitle(str);
+            mainActivity.schedulerInfo.get(pos).setSchedulerTitle(str);
+        }
+
         schedulerAdapter.notifyItemChanged(pos);
         saveSchedules();
     }
@@ -170,7 +174,7 @@ public class AutomationsFragment extends Fragment implements SchedulerViewInterf
                 mainActivity.schedulerInfo.get(pos).getAreaType(),
                 mainActivity.schedulerInfo.get(pos).getCycleCount()};
         for (int i : time) {
-            if (i == NAN) return false;
+            if (i == mainActivity.NAN) return false;
         }
         return true;
     }

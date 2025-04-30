@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="certs">
+        <item>
+            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7e1hHvR17Y5XCIfyHCdsfAx
+            dUylHGtb+UE0y17G7EMOpbBzTwP5fZfE6lR0u6nU2LgZW4U62IYFgaqDsIL+GT2esAAwIC5/
+            KjKrK+YdU7yKhntzMk1C+YgjWWYg8Xej4RjWGRogFkgqGzz8e4h4Lk1TRsL8uJZRik1yhdW/1O2cY2
+            4KKsoQIDAQAB
+        </item>
+        <item>
+            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl6yKHgTD85bGeQKVB11iOp+Xg3u35sSk
+            7p+I5U4OiD/EeF6rzpOgqG/U4j3BqNjmNVzGLsbBG8fp9PhfGBvcMsyXrm+m7Fe6A7SwjjlXAxA
+            U5wZwOFZrZApQ+ITwVEx/2HhSxqT0gRTh/aUkPYBRjFwgGpA==
+        </item>
+    </array>
+</resources>

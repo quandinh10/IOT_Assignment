@@ -1,5 +1,7 @@
 package com.iot232.ssis.fragments;
 
+import static com.iot232.ssis.MainActivity.getCurrentEpochTime;
+
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -27,6 +29,9 @@ import com.iot232.ssis.R;
 import com.iot232.ssis.databinding.FragmentDashboardBinding;
 import com.iot232.ssis.recycler.SchedulerViewInterface;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DashboardFragment extends Fragment {
     View mView;
     MainActivity mainActivity;
@@ -34,9 +39,6 @@ public class DashboardFragment extends Fragment {
     TextView mixer1Time, mixer2Time, mixer3Time, pump1Time, pump2Time;
     ToggleButton mixer1Button, mixer2Button, mixer3Button, area1Button, area2Button, area3Button, pump1Button, pump2Button;
     TextView mixerTitle, areaTitle, pumpTitle;
-
-    public final int NAN = 0, MIXER1 = 1, MIXER2 = 2, MIXER3 = 3, PUMP1 = 10,
-            PUMP2 = 11, AREA1 = 20, AREA2 = 21, AREA3 = 22, NO_TIMER = 30, NO_ACTION = 31;
 
     private FragmentDashboardBinding binding;
 
@@ -79,51 +81,47 @@ public class DashboardFragment extends Fragment {
         pumpTitle = mView.findViewById(R.id.pumpText);
 
         /////SET TIMER OF RELAYS////
-        setTimer(MIXER1);
-        setTimer(MIXER2);
-        setTimer(MIXER3);
-        setTimer(PUMP1);
-        setTimer(PUMP2);
+        for (int i : mainActivity.timerTypes) mainActivity.setTextView(i, mainActivity.getDuration(i, 0, mainActivity.timerInfo));
 
         /////INIT BUTTON STATE/////
-        mixer1Button.setChecked(mainActivity.timerInfo.getMixerState() == MIXER1);
-        mixer2Button.setChecked(mainActivity.timerInfo.getMixerState() == MIXER2);
-        mixer3Button.setChecked(mainActivity.timerInfo.getMixerState() == MIXER3);
-        pump1Button.setChecked(mainActivity.timerInfo.getPumpState() == PUMP1);
-        pump2Button.setChecked(mainActivity.timerInfo.getPumpState() == PUMP2);
-        area1Button.setChecked(mainActivity.timerInfo.getAreaType() == AREA1);
-        area2Button.setChecked(mainActivity.timerInfo.getAreaType() == AREA2);
-        area3Button.setChecked(mainActivity.timerInfo.getAreaType() == AREA3);
+        mixer1Button.setChecked(mainActivity.timerInfo.getMixerState() == mainActivity.MIXER1);
+        mixer2Button.setChecked(mainActivity.timerInfo.getMixerState() == mainActivity.MIXER2);
+        mixer3Button.setChecked(mainActivity.timerInfo.getMixerState() == mainActivity.MIXER3);
+        pump1Button.setChecked(mainActivity.timerInfo.getPumpState() == mainActivity.PUMP1);
+        pump2Button.setChecked(mainActivity.timerInfo.getPumpState() == mainActivity.PUMP2);
+        area1Button.setChecked(mainActivity.timerInfo.getAreaType() == mainActivity.AREA1);
+        area2Button.setChecked(mainActivity.timerInfo.getAreaType() == mainActivity.AREA2);
+        area3Button.setChecked(mainActivity.timerInfo.getAreaType() == mainActivity.AREA3);
 
         //////CHANGE DURATION/////////
         mixer1Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(MIXER1, "Mixer 1");
+                changeDuration(mainActivity.MIXER1, "Mixer 1");
             }
         });
         mixer2Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(MIXER2, "Mixer 2");
+                changeDuration(mainActivity.MIXER2, "Mixer 2");
             }
         });
         mixer3Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(MIXER3, "Mixer 3");
+                changeDuration(mainActivity.MIXER3, "Mixer 3");
             }
         });
         pump1Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(PUMP1, "Pump 1");
+                changeDuration(mainActivity.PUMP1, "Pump 1");
             }
         });
         pump2Card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeDuration(PUMP2, "Pump 2");
+                changeDuration(mainActivity.PUMP2, "Pump 2");
             }
         });
 
@@ -131,59 +129,59 @@ public class DashboardFragment extends Fragment {
         mixer1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getMixer1Time() == 0) invalidAction(mixer1Button, NO_TIMER);
-                else if (mainActivity.timerInfo.getMixerState() == NAN)  buttonPressed(MIXER1, true);
-                else if (mainActivity.timerInfo.getMixerState() == MIXER1)  buttonPressed(MIXER1, false);
-                else invalidAction(mixer1Button, NO_ACTION);
+                if (mainActivity.timerInfo.getMixer1Time() == 0) invalidAction(mixer1Button, mainActivity.NO_TIMER);
+                else if (mainActivity.timerInfo.getMixerState() == mainActivity.NAN)  buttonPressed(mainActivity.MIXER1, true);
+                else if (mainActivity.timerInfo.getMixerState() == mainActivity.MIXER1)  buttonPressed(mainActivity.MIXER1, false);
+                else invalidAction(mixer1Button, mainActivity.NO_ACTION);
             }
         });
         mixer2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getMixer2Time() == 0) invalidAction(mixer2Button, NO_TIMER);
-                else if (mainActivity.timerInfo.getMixerState() == NAN)  buttonPressed(MIXER2, true);
-                else if (mainActivity.timerInfo.getMixerState() == MIXER2) buttonPressed(MIXER2, false);
-                else invalidAction(mixer2Button, NO_ACTION);
+                if (mainActivity.timerInfo.getMixer2Time() == 0) invalidAction(mixer2Button, mainActivity.NO_TIMER);
+                else if (mainActivity.timerInfo.getMixerState() == mainActivity.NAN)  buttonPressed(mainActivity.MIXER2, true);
+                else if (mainActivity.timerInfo.getMixerState() == mainActivity.MIXER2) buttonPressed(mainActivity.MIXER2, false);
+                else invalidAction(mixer2Button, mainActivity.NO_ACTION);
             }
         });
         mixer3Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getMixer3Time() == 0) invalidAction(mixer3Button, NO_TIMER);
-                else if (mainActivity.timerInfo.getMixerState() == NAN)  buttonPressed(MIXER3, true);
-                else if (mainActivity.timerInfo.getMixerState() == MIXER3) buttonPressed(MIXER3, false);
-                else invalidAction(mixer3Button, NO_ACTION);
+                if (mainActivity.timerInfo.getMixer3Time() == 0) invalidAction(mixer3Button, mainActivity.NO_TIMER);
+                else if (mainActivity.timerInfo.getMixerState() == mainActivity.NAN)  buttonPressed(mainActivity.MIXER3, true);
+                else if (mainActivity.timerInfo.getMixerState() == mainActivity.MIXER3) buttonPressed(mainActivity.MIXER3, false);
+                else invalidAction(mixer3Button, mainActivity.NO_ACTION);
             }
         });
         area1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getAreaType() == AREA1) {
-                    mainActivity.timerInfo.setAreaType(NAN);
-                    buttonPressed(AREA1, false);
+                if (mainActivity.timerInfo.getAreaType() == mainActivity.AREA1) {
+                    mainActivity.timerInfo.setAreaType(mainActivity.NAN);
+                    buttonPressed(mainActivity.AREA1, false);
                 }
                 else {
-                    mainActivity.timerInfo.setAreaType(AREA1);
-                    mainActivity.sendSchedule(NAN, AREA1, "selector", NAN);
-                    buttonPressed(AREA1, true);
-                    buttonPressed(AREA2, false);
-                    buttonPressed(AREA3, false);
+                    mainActivity.timerInfo.setAreaType(mainActivity.AREA1);
+                    mainActivity.sendSchedule(mainActivity.NAN, mainActivity.AREA1, "selector", mainActivity.NAN);
+                    buttonPressed(mainActivity.AREA1, true);
+                    buttonPressed(mainActivity.AREA2, false);
+                    buttonPressed(mainActivity.AREA3, false);
                 }
             }
         });
         area2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getAreaType() == AREA2) {
-                    mainActivity.timerInfo.setAreaType(NAN);
-                    buttonPressed(AREA2, false);
+                if (mainActivity.timerInfo.getAreaType() == mainActivity.AREA2) {
+                    mainActivity.timerInfo.setAreaType(mainActivity.NAN);
+                    buttonPressed(mainActivity.AREA2, false);
                 }
                 else {
-                    mainActivity.timerInfo.setAreaType(AREA2);
-                    mainActivity.sendSchedule(NAN, AREA2, "selector", NAN);
-                    buttonPressed(AREA2, true);
-                    buttonPressed(AREA1, false);
-                    buttonPressed(AREA3, false);
+                    mainActivity.timerInfo.setAreaType(mainActivity.AREA2);
+                    mainActivity.sendSchedule(mainActivity.NAN, mainActivity.AREA2, "selector", mainActivity.NAN);
+                    buttonPressed(mainActivity.AREA2, true);
+                    buttonPressed(mainActivity.AREA1, false);
+                    buttonPressed(mainActivity.AREA3, false);
 
                 }
             }
@@ -191,16 +189,16 @@ public class DashboardFragment extends Fragment {
         area3Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getAreaType() == AREA3) {
-                    mainActivity.timerInfo.setAreaType(NAN);
-                    buttonPressed(AREA3, false);
+                if (mainActivity.timerInfo.getAreaType() == mainActivity.AREA3) {
+                    mainActivity.timerInfo.setAreaType(mainActivity.NAN);
+                    buttonPressed(mainActivity.AREA3, false);
                 }
                 else {
-                    mainActivity.timerInfo.setAreaType(AREA3);
-                    mainActivity.sendSchedule(NAN, AREA3, "selector", NAN);
-                    buttonPressed(AREA3, true);
-                    buttonPressed(AREA2, false);
-                    buttonPressed(AREA1, false);
+                    mainActivity.timerInfo.setAreaType(mainActivity.AREA3);
+                    mainActivity.sendSchedule(mainActivity.NAN, mainActivity.AREA3, "selector", mainActivity.NAN);
+                    buttonPressed(mainActivity.AREA3, true);
+                    buttonPressed(mainActivity.AREA2, false);
+                    buttonPressed(mainActivity.AREA1, false);
 
                 }
             }
@@ -208,19 +206,19 @@ public class DashboardFragment extends Fragment {
         pump1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getPump1Time() == 0) invalidAction(pump1Button, NO_TIMER);
-                else if (mainActivity.timerInfo.getPumpState() == NAN)  buttonPressed(PUMP1, true);
-                else if (mainActivity.timerInfo.getPumpState() == PUMP1) buttonPressed(PUMP1, false);
-                else invalidAction(pump1Button, NO_ACTION);
+                if (mainActivity.timerInfo.getPump1Time() == 0) invalidAction(pump1Button, mainActivity.NO_TIMER);
+                else if (mainActivity.timerInfo.getPumpState() == mainActivity.NAN)  buttonPressed(mainActivity.PUMP1, true);
+                else if (mainActivity.timerInfo.getPumpState() == mainActivity.PUMP1) buttonPressed(mainActivity.PUMP1, false);
+                else invalidAction(pump1Button, mainActivity.NO_ACTION);
             }
         });
         pump2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mainActivity.timerInfo.getPump2Time() == 0) invalidAction(pump2Button, NO_TIMER);
-                else if (mainActivity.timerInfo.getPumpState() == NAN)  buttonPressed(PUMP2, true);
-                else if (mainActivity.timerInfo.getPumpState() == PUMP2) buttonPressed(PUMP2, false);
-                else invalidAction(pump2Button, NO_ACTION);
+                if (mainActivity.timerInfo.getPump2Time() == 0) invalidAction(pump2Button, mainActivity.NO_TIMER);
+                else if (mainActivity.timerInfo.getPumpState() == mainActivity.NAN)  buttonPressed(mainActivity.PUMP2, true);
+                else if (mainActivity.timerInfo.getPumpState() == mainActivity.PUMP2) buttonPressed(mainActivity.PUMP2, false);
+                else invalidAction(pump2Button, mainActivity.NO_ACTION);
             }
         });
 
@@ -297,8 +295,8 @@ public class DashboardFragment extends Fragment {
         notiText.setText("Invalid action");
 
         TextView popupText = view.findViewById(R.id.popup_desc);
-        if (type == NO_ACTION) popupText.setText("Action unavailable, a timer is already active.");
-        else if (type == NO_TIMER) popupText.setText("Please set timer before activate.");
+        if (type == mainActivity.NO_ACTION) popupText.setText("Action unavailable, a timer is already active.");
+        else if (type == mainActivity.NO_TIMER) popupText.setText("Please set timer before activate.");
 
         EditText insertText = view.findViewById(R.id.popup_insert);
         insertText.setVisibility(View.GONE);
@@ -329,39 +327,44 @@ public class DashboardFragment extends Fragment {
 
     /////SAVE CHANGE////
     private void saveChange(int type, String str) {
-        if (type == MIXER1) mainActivity.timerInfo.setMixer1Time(Integer.parseInt(str));
-        else if (type == MIXER2) mainActivity.timerInfo.setMixer2Time(Integer.parseInt(str));
-        else if (type == MIXER3) mainActivity.timerInfo.setMixer3Time(Integer.parseInt(str));
-        else if (type == PUMP1) mainActivity.timerInfo.setPump1Time(Integer.parseInt(str));
-        else if (type == PUMP2) mainActivity.timerInfo.setPump2Time(Integer.parseInt(str));
-        setTimer(type);
+        if (type == mainActivity.MIXER1) mainActivity.timerInfo.setMixer1Time(Integer.parseInt(str));
+        else if (type == mainActivity.MIXER2) mainActivity.timerInfo.setMixer2Time(Integer.parseInt(str));
+        else if (type == mainActivity.MIXER3) mainActivity.timerInfo.setMixer3Time(Integer.parseInt(str));
+        else if (type == mainActivity.PUMP1) mainActivity.timerInfo.setPump1Time(Integer.parseInt(str));
+        else if (type == mainActivity.PUMP2) mainActivity.timerInfo.setPump2Time(Integer.parseInt(str));
+        mainActivity.setTextView(type, mainActivity.getDuration(type, 0, mainActivity.timerInfo));
         mainActivity.contentHelper.writeContent(mainActivity.timerInfo, "timerInfo.json", mainActivity);
     }
 
-    ////SET TIMER/////
-    public void setTimer(int type) {
-        if (type == MIXER1) mixer1Time.setText(mainActivity.formatTime(mainActivity.timerInfo.getMixer1Time()));
-        else if (type == MIXER2) mixer2Time.setText(mainActivity.formatTime(mainActivity.timerInfo.getMixer2Time()));
-        else if (type == MIXER3) mixer3Time.setText(mainActivity.formatTime(mainActivity.timerInfo.getMixer3Time()));
-        else if (type == PUMP1) pump1Time.setText(mainActivity.formatTime(mainActivity.timerInfo.getPump1Time()));
-        else if (type == PUMP2) pump2Time.setText(mainActivity.formatTime(mainActivity.timerInfo.getPump2Time()));
-    }
 
     //////ON BUTTON PRESSED//////
     public void buttonPressed(int type, boolean status) {
-        if (type == MIXER1) mixer1Button.setChecked(status);
-        else if (type == MIXER2) mixer2Button.setChecked(status);
-        else if (type == MIXER3) mixer3Button.setChecked(status);
-        else if (type == PUMP1) pump1Button.setChecked(status);
-        else if (type == PUMP2) pump2Button.setChecked(status);
-        else if (type == AREA1) area1Button.setChecked(status);
-        else if (type == AREA2) area2Button.setChecked(status);
-        else if (type == AREA3) area3Button.setChecked(status);
-        if (AREA1 <= type && type <= AREA3) return;
-        if (status) mainActivity.startTimer(type, 0, mainActivity.timerInfo);
+        if (type == mainActivity.MIXER1) mixer1Button.setChecked(status);
+        else if (type == mainActivity.MIXER2) mixer2Button.setChecked(status);
+        else if (type == mainActivity.MIXER3) mixer3Button.setChecked(status);
+        else if (type == mainActivity.PUMP1) pump1Button.setChecked(status);
+        else if (type == mainActivity.PUMP2) pump2Button.setChecked(status);
+        else if (type == mainActivity.AREA1) area1Button.setChecked(status);
+        else if (type == mainActivity.AREA2) area2Button.setChecked(status);
+        else if (type == mainActivity.AREA3) area3Button.setChecked(status);
+
+        if (mainActivity.AREA1 <= type && type <= mainActivity.AREA3) return;
+        if (status){
+            mainActivity.startTimer(type, 0, mainActivity.timerInfo, 0,null, null);
+            if (type >= mainActivity.MIXER1 && type <= mainActivity.MIXER3) {
+                mainActivity.timerInfo.setMixerState(type);
+                mainActivity.timerInfo.setMixerStart(getCurrentEpochTime());
+                mainActivity.sendSchedule(type, mainActivity.getDuration(type, 0, mainActivity.timerInfo), "mixer", mainActivity.MIXER1);
+            }
+            else if (type >= mainActivity.PUMP1 && type <= mainActivity.PUMP2) {
+                mainActivity.timerInfo.setPumpState(type);
+                mainActivity.timerInfo.setPumpStart(getCurrentEpochTime());
+                mainActivity.sendSchedule(type, mainActivity.getDuration(type, 0, mainActivity.timerInfo), "pump", mainActivity.PUMP1);
+            }
+        }
         else{
-            setTimer(type);
-            mainActivity.stopTimer(type);
+            mainActivity.setTextView(type, mainActivity.getDuration(type, 0, mainActivity.timerInfo));
+            mainActivity.stopTimer(type, mainActivity.timerInfo);
         }
     }
 
